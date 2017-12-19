@@ -1,0 +1,224 @@
+
+
+* About fit-text-scale
+
+~fit-text-scale~ provides functions to rescale to fit the text into a
+window.
+
+- Choose the maximal text scale to still see the full line or lines.
+- Choose the maximal text scale to see all lines of a text.
+
+* Keybindings
+:PROPERTIES:
+:ID:       ddba5bdd-1c7b-44ed-bd6a-e249e5426de4
+:END:
+
+Keybindings could be set as
+
+#+begin_src emacs-lisp :tangle no
+
+; key bindings
+(global-set-key
+ (kbd "C-x C-&")
+ (lambda (&optional arg)
+   (interactive "P")
+   (apply
+    (if arg
+        #'fit-text-scale-see-whole-line-max-font-size
+      #'fit-text-scale-see-whole-lines-max-font-size)
+    nil)))
+
+(global-set-key
+ (kbd "C-x C-*")
+ (lambda (&optional arg)
+   (interactive "P")
+   (fit-text-scale-max-font-size-whole-buffer)))
+#+end_src
+
+Recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x
+C-0 }.
+
+* Code
+:PROPERTIES:
+:ID:       5413952e-3e5b-4d3f-b48f-c9d5655c187b
+:header-args: :tangle fit-text-scale.el :comments both
+:END:
+
+** Prologue
+:PROPERTIES:
+:ID:       dc521e3c-123a-429f-9ad2-8451c1a11035
+:END:
+
+#+begin_src emacs-lisp  :tangle fit-text-scale.el :comments no
+;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t -*-
+#+end_src
+
+** Truncated lines environment
+:PROPERTIES:
+:ID:       1418004a-5c5f-4c19-9738-78b7efbef3dc
+:END:
+
+#+begin_src emacs-lisp
+
+(defmacro fit-text-scale-with-truncated-lines (&rest body)
+  `(let ((truncate-lines-before truncate-lines))
+     (unless truncate-lines
+       (toggle-truncate-lines 1))
+     (unwind-protect
+         (progn
+           ,@body)
+       (toggle-truncate-lines (if truncate-lines-before 1 0)))))
+#+end_src
+
+** Text scale wrapper
+:PROPERTIES:
+:ID:       17ed5806-2afd-4771-8495-89558378e2d5
+:END:
+
+#+begin_src emacs-lisp
+(defun fit-text-scale--increase ()
+  (text-scale-increase 1)
+  (sit-for .1))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun fit-text-scale--decrease ()
+  (text-scale-decrease 1)
+  (sit-for .1))
+#+end_src
+
+** Measurement
+:PROPERTIES:
+:ID:       6f4c44ee-0f77-40d5-9ba2-d1d384fcc9ca
+:END:
+
+#+begin_src emacs-lisp
+
+(require 'face-remap) ; text-scale- functions
+
+(defun fit-text-scale--line-width-in-pixel ()
+  "Calculate line width in pixel.
+
+DO get this function right!
+"
+  (fit-text-scale-with-truncated-lines
+   (save-excursion
+     (let* ((start (save-excursion (beginning-of-visual-line) (point)))
+            (end (save-excursion (end-of-visual-line) (point))))
+       (beginning-of-visual-line)
+       (if (and (posn-at-point start) (posn-at-point end))
+           (- (car (posn-x-y (posn-at-point end)))
+              (car (posn-x-y (posn-at-point start))))
+         (1+ (fit-text-scale--window-width-in-pixel)))))))
+
+(defun fit-text-scale--window-width-in-pixel ()
+  "Return window width in pixel."
+  (let* ((window-inside-pixel-edges (window-inside-pixel-edges)))
+    (- (nth 2 window-inside-pixel-edges)
+       (nth 0 window-inside-pixel-edges))))
+
+(defun fit-text-scale--buffer-height-fits-in-window-p ()
+  (save-excursion
+    (let* ((end (point-max))
+           (start (point-min)))
+      (goto-char start)
+      (posn-at-point end))))
+#+end_src
+
+** Find longest line
+:PROPERTIES:
+:ID:       1b3fd6e6-bf2b-4897-8f18-b732f6753cf8
+:END:
+
+#+begin_src emacs-lisp
+(defun fit-text-scale-goto-visible-line-of-max-length ()
+  "Set point into longest line.
+Take at most 84 lines into account."
+  (interactive)
+  (fit-text-scale-with-truncated-lines
+   (let* ((max-line-number (min (save-excursion (move-to-window-line -1)
+                                                (mw-visual-line-number-with-point))
+                                84))
+          (n 0)
+          (index-of-max-line-length 0)
+          (max-length (- (progn (move-to-window-line n)
+                                (end-of-line)
+                                (point))
+                         (progn (move-to-window-line n)
+                                (point)))))
+     (while (< n max-line-number)
+       (incf n)
+       (move-to-window-line n)
+       (let ((length-candidate
+              (- (progn (move-to-window-line n)
+                        (end-of-line)
+                        (point))
+                 (progn (move-to-window-line n)
+                        (point)))))
+         (when (< max-length length-candidate)
+           (setq max-length length-candidate)
+           (setq index-of-max-line-length n))))
+     (move-to-window-line index-of-max-line-length))))
+#+end_src
+
+** Fit in window
+:PROPERTIES:
+:ID:       9df260fe-b9dc-4444-8fab-56ea1cb9ebd5
+:END:
+
+#+begin_src emacs-lisp
+(defun fit-text-scale-max-font-size-whole-buffer ()
+  "Use the maximal text scale to fit the buffer in the window.
+When at minimal text scale stay there and inform."
+  (interactive)
+  (save-excursion
+    (while (fit-text-scale--buffer-height-fits-in-window-p)
+      (fit-text-scale--increase))
+    (while (and
+            (not (fit-text-scale--buffer-height-fits-in-window-p))
+            (< (1+ (text-scale-min-amount))
+               (if text-scale-mode text-scale-mode-amount 0)))
+      (fit-text-scale--decrease))
+    (when (= (floor (text-scale-min-amount))
+             (if text-scale-mode text-scale-mode-amount 0))
+      (message "At minimal text scale."))))
+
+(defun fit-text-scale-see-whole-line-max-font-size ()
+  "Use the maximal text scale to fit the line in the window.
+If this function gives a text scale not as big as it could be
+then the next call might.
+
+DO try to get rid of the factor trick thing below.  this might be
+when `text-rescale-line-width-in-pixel' is fixed.
+"
+  (interactive)
+  (fit-text-scale-with-truncated-lines
+   (let ((factor 1.05))
+     (save-excursion
+       (while (<= (* factor (fit-text-scale--line-width-in-pixel))
+                  (fit-text-scale--window-width-in-pixel))
+         (fit-text-scale--increase))
+       (while (< (fit-text-scale--window-width-in-pixel)
+                 (* factor (fit-text-scale--line-width-in-pixel)))
+         (fit-text-scale--decrease))))))
+
+(defun fit-text-scale-see-whole-lines-max-font-size ()
+  "Use the maximal text scale to fit the lines on the screen in the window.
+If this function gives a text scale not as big as it could be
+then the next call might."
+  (interactive)
+  (save-excursion
+    (fit-text-scale-goto-visible-line-of-max-length)
+    (fit-text-scale-see-whole-line-max-font-size)))
+#+end_src
+
+** Epilogue
+:PROPERTIES:
+:ID:       1ee365eb-e9ce-4ac3-ac14-1b2361d55ed8
+:END:
+
+#+begin_src emacs-lisp
+
+(provide 'fit-text-scale)
+;;; fit-text-scale.el ends here
+#+end_src

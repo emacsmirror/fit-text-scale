@@ -1,5 +1,35 @@
 ;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t -*-
 
+
+;; THIS FILE HAS BEEN GENERATED.
+
+;; [[id:dc521e3c-123a-429f-9ad2-8451c1a11035][Prologue:2]]
+
+;; Copyright (C) 2017
+
+;; Author: <marcowahlsoft@gmail.com>
+;; Keywords: convenience
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; See the literate source.
+
+;;; Code:
+;; Prologue:2 ends here
+
 ;; Truncated lines environment
 ;; :PROPERTIES:
 ;; :ID:       1418004a-5c5f-4c19-9738-78b7efbef3dc

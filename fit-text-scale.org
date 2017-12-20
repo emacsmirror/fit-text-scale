@@ -7,7 +7,9 @@
 window.
 
 - Choose the maximal text scale to still see the full line or lines.
-- Choose the maximal text scale to see all lines of a text.
+  Catchword: horizontal.
+- Choose the maximal text scale to still see all lines of a buffer.
+  Catchword: vertical.
 
 ** Usage
 

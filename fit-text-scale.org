@@ -1,5 +1,6 @@
 
 * About fit-text-scale
+
 ** What
 
 ~fit-text-scale~ provides functions to rescale to fit the text into a
@@ -81,7 +82,6 @@ GPL 3
 
 ;; THIS FILE HAS BEEN GENERATED.
 #+end_src
-
 
 ** Prologue
 :PROPERTIES:

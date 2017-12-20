@@ -1,6 +1,6 @@
 
-
 * About fit-text-scale
+** What
 
 ~fit-text-scale~ provides functions to rescale to fit the text into a
 window.
@@ -8,7 +8,23 @@ window.
 - Choose the maximal text scale to still see the full line or lines.
 - Choose the maximal text scale to see all lines of a text.
 
-* Keybindings
+** Usage
+
+Use
+
+- ~M-x fit-text-scale-see-whole-lines-max-font-size~
+  - Choose about maximal text scale so that longest visible line still
+    fits in current window.
+- ~M-x fit-text-scale-see-whole-line-max-font-size~
+  - Choose about maximal text scale so that the *current* line still
+    fits in current window.
+- ~M-x fit-text-scale-max-font-size-whole-buffer~
+  - Choose about maximal text scale so that the buffer content still
+    fits in current window.
+
+Note that there is some heuristic in these functions.
+
+*** Keybindings
 :PROPERTIES:
 :ID:       ddba5bdd-1c7b-44ed-bd6a-e249e5426de4
 :END:
@@ -35,8 +51,18 @@ Keybindings could be set as
    (fit-text-scale-max-font-size-whole-buffer)))
 #+end_src
 
-Recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x
+With these settings
+
+- C-x C-& binds to ~fit-text-scale-see-whole-lines-max-font-size~.
+- C-u C-x C-& binds to ~fit-text-scale-see-whole-line-max-font-size~.
+- C-x C-* binds to ~fit-text-scale-max-font-size-whole-buffer~.
+
+Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x
 C-0 }.
+
+** Licence
+
+GPL 3
 
 * Code
 :PROPERTIES:
@@ -44,13 +70,54 @@ C-0 }.
 :header-args: :tangle fit-text-scale.el :comments both
 :END:
 
+** Note about generation
+:PROPERTIES:
+:ID:       dcec0aa7-532f-4b0d-a562-5f1b7a1734ca
+:END:
+
+#+name: note-about-generation
+#+begin_src emacs-lisp :tangle no
+
+
+;; THIS FILE HAS BEEN GENERATED.
+#+end_src
+
+
 ** Prologue
 :PROPERTIES:
 :ID:       dc521e3c-123a-429f-9ad2-8451c1a11035
 :END:
 
-#+begin_src emacs-lisp  :tangle fit-text-scale.el :comments no
+#+begin_src emacs-lisp  :tangle fit-text-scale.el :comments no :noweb yes
 ;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t -*-
+<<note-about-generation>>
+#+end_src
+
+#+begin_src emacs-lisp
+
+;; Copyright (C) 2017
+
+;; Author: <marcowahlsoft@gmail.com>
+;; Keywords: convenience
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; See the literate source.
+
+;;; Code:
 #+end_src
 
 ** Truncated lines environment

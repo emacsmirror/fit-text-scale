@@ -1,4 +1,4 @@
-;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t -*-
+;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t ; eval: (view-mode 1) -*-
 
 
 ;; THIS FILE HAS BEEN GENERATED.
@@ -149,7 +149,7 @@ Take at most 84 lines into account."
 
 
 ;; [[id:9df260fe-b9dc-4444-8fab-56ea1cb9ebd5][Fit in window:1]]
-(defun fit-text-scale-max-font-size-whole-buffer ()
+(defun fit-text-scale-max-font-size-see-buffer ()
   "Use the maximal text scale to fit the buffer in the window.
 When at minimal text scale stay there and inform."
   (interactive)
@@ -165,7 +165,7 @@ When at minimal text scale stay there and inform."
              (if text-scale-mode text-scale-mode-amount 0))
       (message "At minimal text scale."))))
 
-(defun fit-text-scale-see-whole-line-max-font-size ()
+(defun fit-text-scale-max-font-size-see-line ()
   "Use the maximal text scale to fit the line in the window.
 If this function gives a text scale not as big as it could be
 then the next call might.
@@ -184,14 +184,14 @@ when `text-rescale-line-width-in-pixel' is fixed.
                  (* factor (fit-text-scale--line-width-in-pixel)))
          (fit-text-scale--decrease))))))
 
-(defun fit-text-scale-see-whole-lines-max-font-size ()
+(defun fit-text-scale-max-font-size-see-lines ()
   "Use the maximal text scale to fit the lines on the screen in the window.
 If this function gives a text scale not as big as it could be
 then the next call might."
   (interactive)
   (save-excursion
     (fit-text-scale-goto-visible-line-of-max-length)
-    (fit-text-scale-see-whole-line-max-font-size)))
+    (fit-text-scale-max-font-size-see-line)))
 ;; Fit in window:1 ends here
 
 ;; Epilogue

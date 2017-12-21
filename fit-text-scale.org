@@ -15,13 +15,13 @@ window.
 
 Use
 
-- ~M-x fit-text-scale-see-whole-lines-max-font-size~
+- ~M-x fit-text-scale-max-font-size-see-lines~
   - Choose about maximal text scale so that longest visible line still
     fits in current window.
-- ~M-x fit-text-scale-see-whole-line-max-font-size~
+- ~M-x fit-text-scale-max-font-size-see-line~
   - Choose about maximal text scale so that the *current* line still
     fits in current window.
-- ~M-x fit-text-scale-max-font-size-whole-buffer~
+- ~M-x fit-text-scale-max-font-size-see-buffer~
   - Choose about maximal text scale so that the buffer content still
     fits in current window.
 
@@ -43,22 +43,22 @@ Keybindings could be set as
    (interactive "P")
    (apply
     (if arg
-        #'fit-text-scale-see-whole-line-max-font-size
-      #'fit-text-scale-see-whole-lines-max-font-size)
+        #'fit-text-scale-max-font-size-see-line
+      #'fit-text-scale-max-font-size-see-lines)
     nil)))
 
 (global-set-key
  (kbd "C-x C-*")
  (lambda (&optional arg)
    (interactive "P")
-   (fit-text-scale-max-font-size-whole-buffer)))
+   (fit-text-scale-max-font-size-see-buffer)))
 #+end_src
 
 With these settings
 
-- C-x C-& binds to ~fit-text-scale-see-whole-lines-max-font-size~.
-- C-u C-x C-& binds to ~fit-text-scale-see-whole-line-max-font-size~.
-- C-x C-* binds to ~fit-text-scale-max-font-size-whole-buffer~.
+- C-x C-& binds to ~fit-text-scale-max-font-size-see-lines~.
+- C-u C-x C-& binds to ~fit-text-scale-max-font-size-see-line~.
+- C-x C-* binds to ~fit-text-scale-max-font-size-see-buffer~.
 
 Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x
 C-0 }.
@@ -236,7 +236,7 @@ Take at most 84 lines into account."
 :END:
 
 #+begin_src emacs-lisp
-(defun fit-text-scale-max-font-size-whole-buffer ()
+(defun fit-text-scale-max-font-size-see-buffer ()
   "Use the maximal text scale to fit the buffer in the window.
 When at minimal text scale stay there and inform."
   (interactive)
@@ -252,7 +252,7 @@ When at minimal text scale stay there and inform."
              (if text-scale-mode text-scale-mode-amount 0))
       (message "At minimal text scale."))))
 
-(defun fit-text-scale-see-whole-line-max-font-size ()
+(defun fit-text-scale-max-font-size-see-line ()
   "Use the maximal text scale to fit the line in the window.
 If this function gives a text scale not as big as it could be
 then the next call might.
@@ -271,14 +271,14 @@ when `text-rescale-line-width-in-pixel' is fixed.
                  (* factor (fit-text-scale--line-width-in-pixel)))
          (fit-text-scale--decrease))))))
 
-(defun fit-text-scale-see-whole-lines-max-font-size ()
+(defun fit-text-scale-max-font-size-see-lines ()
   "Use the maximal text scale to fit the lines on the screen in the window.
 If this function gives a text scale not as big as it could be
 then the next call might."
   (interactive)
   (save-excursion
     (fit-text-scale-goto-visible-line-of-max-length)
-    (fit-text-scale-see-whole-line-max-font-size)))
+    (fit-text-scale-max-font-size-see-line)))
 #+end_src
 
 ** Epilogue

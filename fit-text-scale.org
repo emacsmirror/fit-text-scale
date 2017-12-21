@@ -91,7 +91,7 @@ GPL 3
 :END:
 
 #+begin_src emacs-lisp  :tangle fit-text-scale.el :comments no :noweb yes
-;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t ; eval: (read-only-mode 1) -*-
+;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t ; eval: (view-mode 1) -*-
 <<note-about-generation>>
 #+end_src
 

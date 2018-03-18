@@ -77,7 +77,7 @@
 (require 'face-remap) ; text-scale- functions
 
 (defun fit-text-scale--line-width-in-pixel ()
-  "Calculate line width in pixel.
+  "Calculate line width containing point in pixel.
 
 DO get this function right!
 "
@@ -112,7 +112,7 @@ DO get this function right!
 
 
 ;; [[id:1b3fd6e6-bf2b-4897-8f18-b732f6753cf8][Find longest line:1]]
-(defun fit-text-scale-goto-visible-line-of-max-length ()
+(defun fit-text-scale-goto-visible-line-of-max-length-INCORRECT-VERSION ()
   "Set point into longest line.
 Take at most 84 lines into account."
   (interactive)
@@ -136,6 +136,31 @@ Take at most 84 lines into account."
                         (point))
                  (progn (move-to-window-line n)
                         (point)))))
+         (when (< max-length length-candidate)
+           (setq max-length length-candidate)
+           (setq index-of-max-line-length n))))
+     (move-to-window-line index-of-max-line-length))))
+
+(defun fit-text-scale-goto-visible-line-of-max-length ()
+  "set point into longest line.
+take at most 84 lines into account."
+  (interactive)
+  (fit-text-scale-with-truncated-lines
+   (let* ((max-line-number
+           (min (save-excursion (move-to-window-line -1)
+                                (mw-visual-line-number-with-point))
+                84))
+          (n 0)
+          (index-of-max-line-length 0)
+          (max-length (save-excursion
+                        (move-to-window-line n)
+                        (fit-text-scale--line-width-in-pixel))))
+     (while (< n max-line-number)
+       (incf n)
+       (move-to-window-line n)
+       (let ((length-candidate  (save-excursion
+                        (move-to-window-line n)
+                        (fit-text-scale--line-width-in-pixel))))
          (when (< max-length length-candidate)
            (setq max-length length-candidate)
            (setq index-of-max-line-length n))))
@@ -175,13 +200,15 @@ when `text-rescale-line-width-in-pixel' is fixed.
 "
   (interactive)
   (fit-text-scale-with-truncated-lines
-   (let ((factor 1.05))
+   (let
+       ((factor 1.05)
+        (min-width 23))
      (save-excursion
-       (while (<= (* factor (fit-text-scale--line-width-in-pixel))
+       (while (<= (* factor (max min-width (fit-text-scale--line-width-in-pixel)))
                   (fit-text-scale--window-width-in-pixel))
          (fit-text-scale--increase))
        (while (< (fit-text-scale--window-width-in-pixel)
-                 (* factor (fit-text-scale--line-width-in-pixel)))
+                 (* factor (max min-width (fit-text-scale--line-width-in-pixel))))
          (fit-text-scale--decrease))))))
 
 (defun fit-text-scale-max-font-size-see-lines ()

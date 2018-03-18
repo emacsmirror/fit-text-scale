@@ -262,13 +262,15 @@ when `text-rescale-line-width-in-pixel' is fixed.
 "
   (interactive)
   (fit-text-scale-with-truncated-lines
-   (let ((factor 1.05))
+   (let
+       ((factor 1.05)
+        (min-width 23))
      (save-excursion
-       (while (<= (* factor (fit-text-scale--line-width-in-pixel))
+       (while (<= (* factor (max min-width (fit-text-scale--line-width-in-pixel)))
                   (fit-text-scale--window-width-in-pixel))
          (fit-text-scale--increase))
        (while (< (fit-text-scale--window-width-in-pixel)
-                 (* factor (fit-text-scale--line-width-in-pixel)))
+                 (* factor (max min-width (fit-text-scale--line-width-in-pixel))))
          (fit-text-scale--decrease))))))
 
 (defun fit-text-scale-max-font-size-see-lines ()

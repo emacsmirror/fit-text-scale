@@ -199,16 +199,19 @@ DO try to get rid of the factor trick thing below.  this might be
 when `text-rescale-line-width-in-pixel' is fixed.
 "
   (interactive)
+  (text-scale-mode)
   (fit-text-scale-with-truncated-lines
    (let
        ((factor 1.05)
-        (min-width 23))
+        (min-width 23)
+        (fit-text-scale-max-amount 20))
      (save-excursion
-       (while (<= (* factor (max min-width (fit-text-scale--line-width-in-pixel)))
-                  (fit-text-scale--window-width-in-pixel))
+       (while (and (< text-scale-mode-amount fit-text-scale-max-amount)
+                   (<= (* factor (max min-width (fit-text-scale--line-width-in-pixel)))
+                       (fit-text-scale--window-width-in-pixel)))
          (fit-text-scale--increase))
-       (while (< (fit-text-scale--window-width-in-pixel)
-                 (* factor (max min-width (fit-text-scale--line-width-in-pixel))))
+       (while (and (< (fit-text-scale--window-width-in-pixel)
+                      (* factor (max min-width (fit-text-scale--line-width-in-pixel)))))
          (fit-text-scale--decrease))))))
 
 (defun fit-text-scale-max-font-size-see-lines ()

@@ -204,13 +204,15 @@ when `text-rescale-line-width-in-pixel' is fixed.
    (let
        ((factor 1.05)
         (min-width 23)
-        (fit-text-scale-max-amount 20))
+        (fit-text-scale-max-amount 20)
+        (fit-text-scale-min-amount -12))
      (save-excursion
        (while (and (< text-scale-mode-amount fit-text-scale-max-amount)
                    (<= (* factor (max min-width (fit-text-scale--line-width-in-pixel)))
                        (fit-text-scale--window-width-in-pixel)))
          (fit-text-scale--increase))
-       (while (and (< (fit-text-scale--window-width-in-pixel)
+       (while (and (< fit-text-scale-min-amount text-scale-mode-amount)
+                   (< (fit-text-scale--window-width-in-pixel)
                       (* factor (max min-width (fit-text-scale--line-width-in-pixel)))))
          (fit-text-scale--decrease))))))
 

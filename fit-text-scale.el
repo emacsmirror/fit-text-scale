@@ -141,6 +141,7 @@ Take at most 84 lines into account."
            (setq index-of-max-line-length n))))
      (move-to-window-line index-of-max-line-length))))
 
+;;;###autoload
 (defun fit-text-scale-goto-visible-line-of-max-length ()
   "set point into longest line.
 take at most 84 lines into account."
@@ -174,6 +175,7 @@ take at most 84 lines into account."
 
 
 ;; [[id:9df260fe-b9dc-4444-8fab-56ea1cb9ebd5][Fit in window:1]]
+;;;###autoload
 (defun fit-text-scale-max-font-size-see-buffer ()
   "Use the maximal text scale to fit the buffer in the window.
 When at minimal text scale stay there and inform."
@@ -190,6 +192,7 @@ When at minimal text scale stay there and inform."
              (if text-scale-mode text-scale-mode-amount 0))
       (message "At minimal text scale."))))
 
+;;;###autoload
 (defun fit-text-scale-max-font-size-see-line ()
   "Use the maximal text scale to fit the line in the window.
 If this function gives a text scale not as big as it could be
@@ -215,6 +218,7 @@ when `text-rescale-line-width-in-pixel' is fixed."
                       (* factor (max min-width (fit-text-scale--line-width-in-pixel)))))
          (fit-text-scale--decrease))))))
 
+;;;###autoload
 (defun fit-text-scale-max-font-size-see-lines ()
   "Use the maximal text scale to fit the lines on the screen in the window.
 If this function gives a text scale not as big as it could be

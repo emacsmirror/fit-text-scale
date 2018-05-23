@@ -151,13 +151,13 @@ hidden text can be irritating for sometimes e.g. org links.
 #+begin_src emacs-lisp
 (defun fit-text-scale--increase ()
   (text-scale-increase 1)
-  (sit-for .1))
+  (sit-for 0.1))
 #+end_src
 
 #+begin_src emacs-lisp
 (defun fit-text-scale--decrease ()
   (text-scale-decrease 1)
-  (sit-for .1))
+  (sit-for 0.1))
 #+end_src
 
 ** Measurement
@@ -287,8 +287,7 @@ If this function gives a text scale not as big as it could be
 then the next call might.
 
 DO try to get rid of the factor trick thing below.  this might be
-when `text-rescale-line-width-in-pixel' is fixed.
-"
+when `text-rescale-line-width-in-pixel' is fixed."
   (interactive)
   (text-scale-mode)
   (fit-text-scale-with-truncated-lines

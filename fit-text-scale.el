@@ -57,13 +57,13 @@
 ;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][Text scale wrapper:1]]
 (defun fit-text-scale--increase ()
   (text-scale-increase 1)
-  (sit-for .1))
+  (sit-for 0.1))
 ;; Text scale wrapper:1 ends here
 
 ;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][Text scale wrapper:2]]
 (defun fit-text-scale--decrease ()
   (text-scale-decrease 1)
-  (sit-for .1))
+  (sit-for 0.1))
 ;; Text scale wrapper:2 ends here
 
 ;; Measurement
@@ -196,8 +196,7 @@ If this function gives a text scale not as big as it could be
 then the next call might.
 
 DO try to get rid of the factor trick thing below.  this might be
-when `text-rescale-line-width-in-pixel' is fixed.
-"
+when `text-rescale-line-width-in-pixel' is fixed."
   (interactive)
   (text-scale-mode)
   (fit-text-scale-with-truncated-lines

@@ -204,35 +204,6 @@ DO get this function right!
 :END:
 
 #+begin_src emacs-lisp
-(defun fit-text-scale-goto-visible-line-of-max-length-INCORRECT-VERSION ()
-  "Set point into longest line.
-Take at most 84 lines into account."
-  (interactive)
-  (fit-text-scale-with-truncated-lines
-   (let* ((max-line-number (min (save-excursion (move-to-window-line -1)
-                                                (mw-visual-line-number-with-point))
-                                84))
-          (n 0)
-          (index-of-max-line-length 0)
-          (max-length (- (progn (move-to-window-line n)
-                                (end-of-line)
-                                (point))
-                         (progn (move-to-window-line n)
-                                (point)))))
-     (while (< n max-line-number)
-       (incf n)
-       (move-to-window-line n)
-       (let ((length-candidate
-              (- (progn (move-to-window-line n)
-                        (end-of-line)
-                        (point))
-                 (progn (move-to-window-line n)
-                        (point)))))
-         (when (< max-length length-candidate)
-           (setq max-length length-candidate)
-           (setq index-of-max-line-length n))))
-     (move-to-window-line index-of-max-line-length))))
-
 ;;;###autoload
 (defun fit-text-scale-goto-visible-line-of-max-length ()
   "set point into longest line.

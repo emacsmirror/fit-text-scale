@@ -38,12 +38,13 @@
 ;; [[id:1418004a-5c5f-4c19-9738-78b7efbef3dc][Truncated lines environment:1]]
 (defmacro fts-with-truncated-lines (&rest body)
   `(let ((truncate-lines-before truncate-lines))
-     (unless truncate-lines
+     (unless truncate-lines-before
        (toggle-truncate-lines 1))
      (unwind-protect
          (progn
            ,@body)
-       (toggle-truncate-lines (if truncate-lines-before 1 0)))))
+       (unless truncate-lines-before
+         (toggle-truncate-lines 1)))))
 
 ;; Truncated lines environment:1 ends here
 

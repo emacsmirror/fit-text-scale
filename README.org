@@ -1,0 +1,84 @@
+# Created 2018-06-28 Thu 14:36
+#+TITLE: about
+fit-text-scale
+
+* what
+
+#+name: documentation-what
+#+begin_src text
+~fit-text-scale~ provides functions to maximize the fontsize to fit
+the text into a window.
+
+Up to now there are three functions:
+- Choose the maximal text scale to still see the full line.
+- Choose the maximal text scale to still see the full lines.
+- Choose the maximal text scale to still see all lines of a buffer.
+#+end_src
+
+* usage
+
+#+name: documentation-usage
+#+begin_src text
+Use
+
+- ~M-x fts-max-font-size-see-lines~
+  - Choose about maximal text scale so that longest visible line still
+    fits in current window.
+- ~M-x fts-max-font-size-see-line~
+  - Choose about maximal text scale so that the *current* line still
+    fits in current window.
+- ~M-x fts-max-font-size-see-buffer~
+  - Choose about maximal text scale so that the buffer content still
+    fits in current window.
+#+end_src
+
+** Keybindings
+Keybindings could be set as
+
+#+begin_src emacs-lisp
+
+; key bindings
+(global-set-key
+ (kbd "C-x C-&")
+ (lambda (&optional arg)
+   (interactive "P")
+   (apply
+    (if arg
+        #'fts-max-font-size-see-line
+      #'fts-max-font-size-see-lines)
+    nil)))
+
+(global-set-key
+ (kbd "C-x C-*")
+ (lambda (&optional arg)
+   (interactive "P")
+   (fts-max-font-size-see-buffer)))
+#+end_src
+
+With these settings
+
+- C-x C-& binds to ~fts-max-font-size-see-lines~.
+- C-u C-x C-& binds to ~fts-max-font-size-see-line~.
+- C-x C-* binds to ~fts-max-font-size-see-buffer~.
+
+Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x
+C-0 }.
+
+* licence
+#+name: license
+#+begin_src text
+Copyright (C) 2017, 2018 Marco Wahl
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#+end_src

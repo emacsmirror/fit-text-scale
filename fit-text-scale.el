@@ -1,41 +1,84 @@
 ;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t ; eval: (view-mode 1) -*-
-
+
 ;; THIS FILE HAS BEEN GENERATED.
 
-
-;; [[id:dc521e3c-123a-429f-9ad2-8451c1a11035][Prologue:2]]
-;; Copyright (C) 2017, 2018
-
 ;; Author: <marcowahlsoft@gmail.com>
 ;; Keywords: convenience
 
+;; [[id:dc521e3c-123a-429f-9ad2-8451c1a11035][prologue:2]]
+
+;; Copyright (C) 2017, 2018 Marco Wahl
+;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-
+;; 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-
+;; 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+
 ;;; Commentary:
 
-;; See the literate source.
+;; ~fit-text-scale~ provides functions to maximize the fontsize to fit
+;; the text into a window.
+;; 
+;; Up to now there are three functions:
+;; - Choose the maximal text scale to still see the full line.
+;; - Choose the maximal text scale to still see the full lines.
+;; - Choose the maximal text scale to still see all lines of a buffer.
 
+;; Use
+;; 
+;; - ~M-x fts-max-font-size-see-lines~
+;;   - Choose about maximal text scale so that longest visible line still
+;;     fits in current window.
+;; - ~M-x fts-max-font-size-see-line~
+;;   - Choose about maximal text scale so that the *current* line still
+;;     fits in current window.
+;; - ~M-x fts-max-font-size-see-buffer~
+;;   - Choose about maximal text scale so that the buffer content still
+;;     fits in current window.
+
 ;;; Code:
-;; Prologue:2 ends here
+;; prologue:2 ends here
 
-;; Truncated lines environment
+;; visual line number
+;; :PROPERTIES:
+;; :ID:       e5ae819e-c71e-4389-bdf5-b7497be1c566
+;; :END:
+
+;; Consider just the window lines.
+
+
+;; [[id:e5ae819e-c71e-4389-bdf5-b7497be1c566][visual line number:1]]
+(defun fts-window-line-number-with-point ()
+  "Return number of window line.
+Top line is 0."
+  ;; Note: Think about speed up by exponential seach.
+  (let ((pt (save-excursion (forward-line 0) (point)))
+        (n 0))
+    (save-excursion
+      (while (< (progn
+                   (move-to-window-line n)
+                   (point))
+                 pt)
+        (setq n (1+ n))))
+    n))
+;; visual line number:1 ends here
+
+;; truncated lines environment
 ;; :PROPERTIES:
 ;; :ID:       1418004a-5c5f-4c19-9738-78b7efbef3dc
 ;; :END:
 
 
-;; [[id:1418004a-5c5f-4c19-9738-78b7efbef3dc][Truncated lines environment:1]]
+;; [[id:1418004a-5c5f-4c19-9738-78b7efbef3dc][truncated lines environment:1]]
+
 (defmacro fts-with-truncated-lines (&rest body)
   `(let ((truncate-lines-before truncate-lines))
      (unless truncate-lines-before
@@ -45,38 +88,41 @@
            ,@body)
        (unless truncate-lines-before
          (toggle-truncate-lines 1)))))
-
-;; Truncated lines environment:1 ends here
+;; truncated lines environment:1 ends here
 
-;; Text scale wrapper
+;; text scale wrapper
 ;; :PROPERTIES:
 ;; :ID:       17ed5806-2afd-4771-8495-89558378e2d5
 ;; :END:
 
 
-;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][Text scale wrapper:1]]
+;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][text scale wrapper:1]]
+
+;; text scale wrapper
+;; text scale wrapper:1 ends here
+
+;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][text scale wrapper:2]]
 (defun fts--increase ()
   (text-scale-increase 1)
-  (sit-for 0.1))
-;; Text scale wrapper:1 ends here
+  (sit-for 0.2))
+;; text scale wrapper:2 ends here
 
-;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][Text scale wrapper:2]]
+;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][text scale wrapper:3]]
 (defun fts--decrease ()
   (text-scale-decrease 1)
-  (sit-for 0.1))
-;; Text scale wrapper:2 ends here
+  (sit-for 0.2))
+;; text scale wrapper:3 ends here
 
-;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][Text scale wrapper:3]]
-
-;; Text scale wrapper:3 ends here
-
-;; Measurement
+;; measurement
 ;; :PROPERTIES:
 ;; :ID:       6f4c44ee-0f77-40d5-9ba2-d1d384fcc9ca
 ;; :END:
 
 
-;; [[id:6f4c44ee-0f77-40d5-9ba2-d1d384fcc9ca][Measurement:1]]
+;; [[id:6f4c44ee-0f77-40d5-9ba2-d1d384fcc9ca][measurement:1]]
+
+;; measurement
+
 (require 'face-remap) ; text-scale- functions
 
 (defun fts--line-width-in-pixel ()
@@ -106,26 +152,30 @@ DO get this function right!
            (start (point-min)))
       (goto-char start)
       (posn-at-point end))))
-
-;; Measurement:1 ends here
+;; measurement:1 ends here
 
-;; Find longest line
+;; find longest line
 ;; :PROPERTIES:
 ;; :ID:       1b3fd6e6-bf2b-4897-8f18-b732f6753cf8
 ;; :END:
 
 
-;; [[id:1b3fd6e6-bf2b-4897-8f18-b732f6753cf8][Find longest line:1]]
+;; [[id:1b3fd6e6-bf2b-4897-8f18-b732f6753cf8][find longest line:1]]
+
+;; find longest line
+
+(defvar fts-consider-max-number-lines 42)
+
 ;;;###autoload
 (defun fts-goto-visible-line-of-max-length ()
-  "set point into longest line.
-take at most 84 lines into account."
+  "Set point into longest line.
+Take at most `fts-consider-max-number-lines' lines into account."
   (interactive)
   (fts-with-truncated-lines
    (let* ((max-line-number
            (min (save-excursion (move-to-window-line -1)
-                                (mw-visual-line-number-with-point))
-                84))
+                                (fts-window-line-number-with-point))
+                fts-consider-max-number-lines))
           (n 0)
           (index-of-max-line-length 0)
           (max-length (save-excursion
@@ -141,17 +191,17 @@ take at most 84 lines into account."
            (setq max-length length-candidate)
            (setq index-of-max-line-length n))))
      (move-to-window-line index-of-max-line-length))))
+;; find longest line:1 ends here
 
-
-;; Find longest line:1 ends here
-
-;; Fit in window
+;; fit in window
 ;; :PROPERTIES:
 ;; :ID:       9df260fe-b9dc-4444-8fab-56ea1cb9ebd5
 ;; :END:
 
 
-;; [[id:9df260fe-b9dc-4444-8fab-56ea1cb9ebd5][Fit in window:1]]
+;; [[id:9df260fe-b9dc-4444-8fab-56ea1cb9ebd5][fit in window:1]]
+
+;; fit in window
 ;;;###autoload
 (defun fts-max-font-size-see-buffer ()
   "Use the maximal text scale to fit the buffer in the window.
@@ -204,19 +254,18 @@ then the next call might."
   (save-excursion
     (fts-goto-visible-line-of-max-length)
     (fts-max-font-size-see-line)))
+;; fit in window:1 ends here
 
-
-;; Fit in window:1 ends here
-
-;; Epilogue
+;; epilogue
 ;; :PROPERTIES:
 ;; :ID:       1ee365eb-e9ce-4ac3-ac14-1b2361d55ed8
 ;; :END:
 
 
-;; [[id:1ee365eb-e9ce-4ac3-ac14-1b2361d55ed8][Epilogue:1]]
+;; [[id:1ee365eb-e9ce-4ac3-ac14-1b2361d55ed8][epilogue:1]]
+
 (provide 'fit-text-scale)
 
 
 ;;; fit-text-scale.el ends here
-;; Epilogue:1 ends here
+;; epilogue:1 ends here

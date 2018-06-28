@@ -1,18 +1,28 @@
 
-* About fit-text-scale
+* about
+:PROPERTIES:
+:EXPORT_FILE_NAME: README.org
+:END:
 
-** What
+fit-text-scale
 
-~fit-text-scale~ provides functions to rescale to fit the text into a
-window.
+** what
 
-- Choose the maximal text scale to still see the full line or lines.
-  Catchword: horizontal.
+#+name: documentation-what
+#+begin_src text
+~fit-text-scale~ provides functions to maximize the fontsize to fit
+the text into a window.
+
+Up to now there are three functions:
+- Choose the maximal text scale to still see the full line.
+- Choose the maximal text scale to still see the full lines.
 - Choose the maximal text scale to still see all lines of a buffer.
-  Catchword: vertical.
+#+end_src
 
-** Usage
+** usage
 
+#+name: documentation-usage
+#+begin_src text
 Use
 
 - ~M-x fts-max-font-size-see-lines~
@@ -24,8 +34,7 @@ Use
 - ~M-x fts-max-font-size-see-buffer~
   - Choose about maximal text scale so that the buffer content still
     fits in current window.
-
-Note that there is some heuristic in these functions.
+#+end_src
 
 *** Keybindings
 :PROPERTIES:
@@ -63,33 +72,64 @@ With these settings
 Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x
 C-0 }.
 
-** Licence
+** licence
+:PROPERTIES:
+:ID:       e8942229-c677-4ec0-9543-ff7ce3e47ce5
+:END:
 
-GPL 3
+#+name: license
+#+begin_src text :tangle LICENSE
+Copyright (C) 2017, 2018 Marco Wahl
 
-** TODO play with metric from pixels to replace cursor metric
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#+end_src
+
+* tasks
+** TODO investigate irritations with org-links
 
 hidden text can be irritating for sometimes e.g. org links.
 
-* Code
+** DONE keep license information DRY :ARCHIVE:
+CLOSED: [2018-06-28 Thu 14:34]
+:LOGBOOK:
+- CLOSING NOTE [2018-06-28 Thu 14:34]
+:END:
+
+the license information now lives in a source block in the about
+section.  this block is referenced from the code and get's weaved in
+at the tangling.
+
+same for the rest of the documentation btw.
+
+* code
 :PROPERTIES:
 :ID:       5413952e-3e5b-4d3f-b48f-c9d5655c187b
 :header-args: :tangle fit-text-scale.el :comments both
 :END:
 
-** Note about generation
+** meta
 :PROPERTIES:
 :ID:       dcec0aa7-532f-4b0d-a562-5f1b7a1734ca
 :END:
 
 #+name: note-about-generation
 #+begin_src emacs-lisp :tangle no
-
-;; THIS FILE HAS BEEN GENERATED.
 
+;; THIS FILE HAS BEEN GENERATED.
 #+end_src
 
-** Prologue
+** prologue
 :PROPERTIES:
 :ID:       dc521e3c-123a-429f-9ad2-8451c1a11035
 :END:
@@ -97,40 +137,56 @@ hidden text can be irritating for sometimes e.g. org links.
 #+begin_src emacs-lisp  :tangle fit-text-scale.el :comments no :noweb yes
 ;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t ; eval: (view-mode 1) -*-
 <<note-about-generation>>
-#+end_src
-
-#+begin_src emacs-lisp
-;; Copyright (C) 2017, 2018
-
+
 ;; Author: <marcowahlsoft@gmail.com>
 ;; Keywords: convenience
+#+end_src
 
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+#+begin_src emacs-lisp :noweb yes
+
+;; <<license>>
+
 ;;; Commentary:
 
-;; See the literate source.
+;; <<documentation-what>>
 
+;; <<documentation-usage>>
+
 ;;; Code:
 #+end_src
 
-** Truncated lines environment
+** auxilliaries
+
+*** visual line number
+:PROPERTIES:
+:ID:       e5ae819e-c71e-4389-bdf5-b7497be1c566
+:END:
+
+Consider just the window lines.
+
+#+begin_src emacs-lisp
+(defun fts-window-line-number-with-point ()
+  "Return number of window line.
+Top line is 0."
+  ;; Note: Think about speed up by exponential seach.
+  (let ((pt (save-excursion (forward-line 0) (point)))
+        (n 0))
+    (save-excursion
+      (while (< (progn
+                   (move-to-window-line n)
+                   (point))
+                 pt)
+        (setq n (1+ n))))
+    n))
+#+end_src
+
+*** truncated lines environment
 :PROPERTIES:
 :ID:       1418004a-5c5f-4c19-9738-78b7efbef3dc
 :END:
 
 #+begin_src emacs-lisp
+
 (defmacro fts-with-truncated-lines (&rest body)
   `(let ((truncate-lines-before truncate-lines))
      (unless truncate-lines-before
@@ -140,36 +196,39 @@ hidden text can be irritating for sometimes e.g. org links.
            ,@body)
        (unless truncate-lines-before
          (toggle-truncate-lines 1)))))
-
 #+end_src
 
-** Text scale wrapper
+** text scale wrapper
 :PROPERTIES:
 :ID:       17ed5806-2afd-4771-8495-89558378e2d5
 :END:
 
 #+begin_src emacs-lisp
+
+;; text scale wrapper
+#+end_src
+
+#+begin_src emacs-lisp
 (defun fts--increase ()
   (text-scale-increase 1)
-  (sit-for 0.1))
+  (sit-for 0.2))
 #+end_src
 
 #+begin_src emacs-lisp
 (defun fts--decrease ()
   (text-scale-decrease 1)
-  (sit-for 0.1))
+  (sit-for 0.2))
 #+end_src
 
-#+begin_src emacs-lisp
-
-#+end_src
-
-** Measurement
+** measurement
 :PROPERTIES:
 :ID:       6f4c44ee-0f77-40d5-9ba2-d1d384fcc9ca
 :END:
 
 #+begin_src emacs-lisp
+
+;; measurement
+
 (require 'face-remap) ; text-scale- functions
 
 (defun fts--line-width-in-pixel ()
@@ -199,25 +258,29 @@ DO get this function right!
            (start (point-min)))
       (goto-char start)
       (posn-at-point end))))
-
 #+end_src
 
-** Find longest line
+** find longest line
 :PROPERTIES:
 :ID:       1b3fd6e6-bf2b-4897-8f18-b732f6753cf8
 :END:
 
 #+begin_src emacs-lisp
+
+;; find longest line
+
+(defvar fts-consider-max-number-lines 42)
+
 ;;;###autoload
 (defun fts-goto-visible-line-of-max-length ()
-  "set point into longest line.
-take at most 84 lines into account."
+  "Set point into longest line.
+Take at most `fts-consider-max-number-lines' lines into account."
   (interactive)
   (fts-with-truncated-lines
    (let* ((max-line-number
            (min (save-excursion (move-to-window-line -1)
-                                (mw-visual-line-number-with-point))
-                84))
+                                (fts-window-line-number-with-point))
+                fts-consider-max-number-lines))
           (n 0)
           (index-of-max-line-length 0)
           (max-length (save-excursion
@@ -233,16 +296,16 @@ take at most 84 lines into account."
            (setq max-length length-candidate)
            (setq index-of-max-line-length n))))
      (move-to-window-line index-of-max-line-length))))
-
-
 #+end_src
 
-** Fit in window
+** fit in window
 :PROPERTIES:
 :ID:       9df260fe-b9dc-4444-8fab-56ea1cb9ebd5
 :END:
 
 #+begin_src emacs-lisp
+
+;; fit in window
 ;;;###autoload
 (defun fts-max-font-size-see-buffer ()
   "Use the maximal text scale to fit the buffer in the window.
@@ -295,16 +358,15 @@ then the next call might."
   (save-excursion
     (fts-goto-visible-line-of-max-length)
     (fts-max-font-size-see-line)))
-
-
 #+end_src
 
-** Epilogue
+** epilogue
 :PROPERTIES:
 :ID:       1ee365eb-e9ce-4ac3-ac14-1b2361d55ed8
 :END:
 
 #+begin_src emacs-lisp
+
 (provide 'fit-text-scale)
 
 

@@ -133,12 +133,13 @@ hidden text can be irritating for sometimes e.g. org links.
 #+begin_src emacs-lisp
 (defmacro fts-with-truncated-lines (&rest body)
   `(let ((truncate-lines-before truncate-lines))
-     (unless truncate-lines
+     (unless truncate-lines-before
        (toggle-truncate-lines 1))
      (unwind-protect
          (progn
            ,@body)
-       (toggle-truncate-lines (if truncate-lines-before 1 0)))))
+       (unless truncate-lines-before
+         (toggle-truncate-lines 1)))))
 
 #+end_src
 

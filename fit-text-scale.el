@@ -56,14 +56,15 @@
 ;; [[id:1418004a-5c5f-4c19-9738-78b7efbef3dc][truncated lines environment:1]]
 
 (defmacro fts-with-truncated-lines (&rest body)
-  `(let ((truncate-lines-before truncate-lines))
-     (unless truncate-lines-before
-       (toggle-truncate-lines))
-     (unwind-protect
-         (progn
-           ,@body)
-       (unless truncate-lines-before
-         (toggle-truncate-lines)))))
+  (let ((truncate-lines-before (gensym)))
+    `(let ((,truncate-lines-before truncate-lines))
+      (unless ,truncate-lines-before
+        (toggle-truncate-lines))
+      (unwind-protect
+          (progn
+            ,@body)
+        (unless ,truncate-lines-before
+          (toggle-truncate-lines))))))
 ;; truncated lines environment:1 ends here
 
 ;; text scale wrapper

@@ -250,7 +250,7 @@ DO get this function right!
 
 ;;;###autoload
 (defun fts-goto-visible-line-of-max-length ()
-  "Set point into longest line.
+  "Set point into longest visible line.
 Take at most `fts-consider-max-number-lines' lines into account."
   (interactive)
   (fts-with-truncated-lines

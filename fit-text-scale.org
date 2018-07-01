@@ -228,10 +228,9 @@ same for the rest of the documentation btw.
 
 (defun fts--buffer-height-fits-in-window-p ()
   (save-excursion
-    (let* ((end (point-max))
-           (start (point-min)))
-      (goto-char start)
-      (posn-at-point end))))
+    (goto-char (point-min))
+    (sit-for 0)
+    (posn-at-point (point-max))))
 #+end_src
 
 ** find longest line

@@ -47,30 +47,6 @@
 ;;; Code:
 ;; prologue:2 ends here
 
-;; visual line number
-;; :PROPERTIES:
-;; :ID:       e5ae819e-c71e-4389-bdf5-b7497be1c566
-;; :END:
-
-;; Consider just the window lines.
-
-
-;; [[id:e5ae819e-c71e-4389-bdf5-b7497be1c566][visual line number:1]]
-(defun fts-window-line-number-with-point ()
-  "Return number of window line.
-Top line is 0."
-  ;; Note: Think about speed up by exponential seach.
-  (let ((pt (save-excursion (forward-line 0) (point)))
-        (n 0))
-    (save-excursion
-      (while (< (progn
-                   (move-to-window-line n)
-                   (point))
-                 pt)
-        (setq n (1+ n))))
-    n))
-;; visual line number:1 ends here
-
 ;; truncated lines environment
 ;; :PROPERTIES:
 ;; :ID:       1418004a-5c5f-4c19-9738-78b7efbef3dc
@@ -173,8 +149,7 @@ Take at most `fts-consider-max-number-lines' lines into account."
   (interactive)
   (fts-with-truncated-lines
    (let* ((max-line-number
-           (min (save-excursion (move-to-window-line -1)
-                                (fts-window-line-number-with-point))
+           (min (save-excursion (move-to-window-line -1))
                 fts-consider-max-number-lines))
           (n 0)
           (index-of-max-line-length 0)
@@ -184,6 +159,7 @@ Take at most `fts-consider-max-number-lines' lines into account."
      (while (< n max-line-number)
        (incf n)
        (move-to-window-line n)
+       (sit-for 0) ; get visual progress indicator.
        (let ((length-candidate  (save-excursion
                         (move-to-window-line n)
                         (fts--line-width-in-pixel))))

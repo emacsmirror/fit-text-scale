@@ -58,12 +58,12 @@
 (defmacro fts-with-truncated-lines (&rest body)
   `(let ((truncate-lines-before truncate-lines))
      (unless truncate-lines-before
-       (toggle-truncate-lines 1))
+       (toggle-truncate-lines))
      (unwind-protect
          (progn
            ,@body)
        (unless truncate-lines-before
-         (toggle-truncate-lines 1)))))
+         (toggle-truncate-lines)))))
 ;; truncated lines environment:1 ends here
 
 ;; text scale wrapper
@@ -102,19 +102,15 @@
 (require 'face-remap) ; text-scale- functions
 
 (defun fts--line-width-in-pixel ()
-  "Calculate line width containing point in pixel.
-
-DO get this function right!
-"
-  (fts-with-truncated-lines
-   (save-excursion
-     (let* ((start (save-excursion (beginning-of-visual-line) (point)))
-            (end (save-excursion (end-of-visual-line) (point))))
-       (beginning-of-visual-line)
-       (if (and (posn-at-point start) (posn-at-point end))
-           (- (car (posn-x-y (posn-at-point end)))
-              (car (posn-x-y (posn-at-point start))))
-         (1+ (fts--window-width-in-pixel)))))))
+  "Calculate line width containing point in pixel."
+  (save-excursion
+    (let* ((start (save-excursion (beginning-of-visual-line) (point)))
+           (end (save-excursion (end-of-visual-line) (point))))
+      (beginning-of-visual-line)
+      (if (and (posn-at-point start) (posn-at-point end))
+          (- (car (posn-x-y (posn-at-point end)))
+             (car (posn-x-y (posn-at-point start))))
+        (1+ (fts--window-width-in-pixel))))))
 
 (defun fts--window-width-in-pixel ()
   "Return window width in pixel."
@@ -135,6 +131,9 @@ DO get this function right!
 ;; :ID:       1b3fd6e6-bf2b-4897-8f18-b732f6753cf8
 ;; :END:
 
+;; the longest line length is essential to fit a part horizontally into a
+;; given window.
+
 
 ;; [[id:1b3fd6e6-bf2b-4897-8f18-b732f6753cf8][find longest line:1]]
 
@@ -144,7 +143,7 @@ DO get this function right!
 
 ;;;###autoload
 (defun fts-goto-visible-line-of-max-length ()
-  "Set point into longest line.
+  "Set point into longest visible line.
 Take at most `fts-consider-max-number-lines' lines into account."
   (interactive)
   (fts-with-truncated-lines

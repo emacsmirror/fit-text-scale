@@ -291,15 +291,20 @@ Take at most `fts-consider-max-number-lines' lines into account."
 When at minimal text scale stay there and inform."
   (interactive)
   (save-excursion
-    (while (fts--buffer-height-fits-in-window-p)
+    (while (and (fts--buffer-height-fits-in-window-p)
+                (< (or text-scale-mode-amount 0)
+                   (text-scale-max-amount)))
       (fts--increase))
     (while (and
             (not (fts--buffer-height-fits-in-window-p))
             (< (1+ (text-scale-min-amount))
-               (if text-scale-mode text-scale-mode-amount 0)))
+               (or text-scale-mode-amount 0)))
       (fts--decrease))
+    (when (= (floor (text-scale-max-amount))
+             (or text-scale-mode-amount 0))
+      (message "At maximal text scale."))
     (when (= (floor (text-scale-min-amount))
-             (if text-scale-mode text-scale-mode-amount 0))
+             (or text-scale-mode-amount 0))
       (message "At minimal text scale."))))
 
 ;;;###autoload

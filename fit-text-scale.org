@@ -165,14 +165,15 @@ same for the rest of the documentation btw.
 #+begin_src emacs-lisp
 
 (defmacro fts-with-truncated-lines (&rest body)
-  `(let ((truncate-lines-before truncate-lines))
-     (unless truncate-lines-before
-       (toggle-truncate-lines))
-     (unwind-protect
-         (progn
-           ,@body)
-       (unless truncate-lines-before
-         (toggle-truncate-lines)))))
+  (let ((truncate-lines-before (gensym)))
+    `(let ((,truncate-lines-before truncate-lines))
+      (unless ,truncate-lines-before
+        (toggle-truncate-lines))
+      (unwind-protect
+          (progn
+            ,@body)
+        (unless ,truncate-lines-before
+          (toggle-truncate-lines))))))
 #+end_src
 
 ** text scale wrapper

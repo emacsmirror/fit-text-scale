@@ -10,8 +10,8 @@ fit-text-scale
 
 #+name: documentation-what
 #+begin_src text
-~fit-text-scale~ provides functions to maximize the fontsize to fit
-the text into a window.
+~fit-text-scale~ trys to help with setting the scale (aka zoom outside
+Emacs.)
 
 Up to now there are three functions:
 - Choose the maximal text scale to still see the full line.
@@ -35,6 +35,10 @@ Use
   - Choose about maximal text scale so that the buffer content still
     fits in current window.
 #+end_src
+
+There are cases when the automatism fails.  In case use the classical
+text-scale functions to in- and decrease the scaling.  Try keys ~C-x
+C-+~ and ~C-x C--~.
 
 *** Keybindings
 :PROPERTIES:

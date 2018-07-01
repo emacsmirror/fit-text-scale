@@ -209,19 +209,15 @@ same for the rest of the documentation btw.
 (require 'face-remap) ; text-scale- functions
 
 (defun fts--line-width-in-pixel ()
-  "Calculate line width containing point in pixel.
-
-DO get this function right!
-"
-  (fts-with-truncated-lines
-   (save-excursion
-     (let* ((start (save-excursion (beginning-of-visual-line) (point)))
-            (end (save-excursion (end-of-visual-line) (point))))
-       (beginning-of-visual-line)
-       (if (and (posn-at-point start) (posn-at-point end))
-           (- (car (posn-x-y (posn-at-point end)))
-              (car (posn-x-y (posn-at-point start))))
-         (1+ (fts--window-width-in-pixel)))))))
+  "Calculate line width containing point in pixel."
+  (save-excursion
+    (let* ((start (save-excursion (beginning-of-visual-line) (point)))
+           (end (save-excursion (end-of-visual-line) (point))))
+      (beginning-of-visual-line)
+      (if (and (posn-at-point start) (posn-at-point end))
+          (- (car (posn-x-y (posn-at-point end)))
+             (car (posn-x-y (posn-at-point start))))
+        (1+ (fts--window-width-in-pixel))))))
 
 (defun fts--window-width-in-pixel ()
   "Return window width in pixel."

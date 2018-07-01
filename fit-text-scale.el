@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; ~fit-text-scale~ provides functions to maximize the fontsize to fit
-;; the text into a window.
+;; ~fit-text-scale~ trys to help with setting the scale (aka zoom outside
+;; Emacs.)
 ;; 
 ;; Up to now there are three functions:
 ;; - Choose the maximal text scale to still see the full line.
@@ -121,10 +121,9 @@
 
 (defun fts--buffer-height-fits-in-window-p ()
   (save-excursion
-    (let* ((end (point-max))
-           (start (point-min)))
-      (goto-char start)
-      (posn-at-point end))))
+    (goto-char (point-min))
+    (sit-for 0)
+    (posn-at-point (point-max))))
 ;; measurement:1 ends here
 
 ;; find longest line
@@ -159,14 +158,17 @@ Take at most `fts-consider-max-number-lines' lines into account."
      (while (< n max-line-number)
        (incf n)
        (move-to-window-line n)
+       (let ((hl-line-mode t)) (hl-line-highlight))
        (sit-for 0) ; get visual progress indicator.
        (let ((length-candidate  (save-excursion
                         (move-to-window-line n)
                         (fts--line-width-in-pixel))))
          (when (< max-length length-candidate)
            (setq max-length length-candidate)
-           (setq index-of-max-line-length n))))
-     (move-to-window-line index-of-max-line-length))))
+           (setq index-of-max-line-length n)))
+       (let ((hl-line-mode t)) (hl-line-highlight)))
+     (move-to-window-line index-of-max-line-length)
+     (let ((hl-line-mode nil)) (hl-line-highlight)))))
 ;; find longest line:1 ends here
 
 ;; fit in window
@@ -184,15 +186,20 @@ Take at most `fts-consider-max-number-lines' lines into account."
 When at minimal text scale stay there and inform."
   (interactive)
   (save-excursion
-    (while (fts--buffer-height-fits-in-window-p)
+    (while (and (fts--buffer-height-fits-in-window-p)
+                (< (or text-scale-mode-amount 0)
+                   (text-scale-max-amount)))
       (fts--increase))
     (while (and
             (not (fts--buffer-height-fits-in-window-p))
             (< (1+ (text-scale-min-amount))
-               (if text-scale-mode text-scale-mode-amount 0)))
+               (or text-scale-mode-amount 0)))
       (fts--decrease))
+    (when (= (floor (text-scale-max-amount))
+             (or text-scale-mode-amount 0))
+      (message "At maximal text scale."))
     (when (= (floor (text-scale-min-amount))
-             (if text-scale-mode text-scale-mode-amount 0))
+             (or text-scale-mode-amount 0))
       (message "At minimal text scale."))))
 
 ;;;###autoload

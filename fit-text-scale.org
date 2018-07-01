@@ -167,12 +167,12 @@ same for the rest of the documentation btw.
 (defmacro fts-with-truncated-lines (&rest body)
   `(let ((truncate-lines-before truncate-lines))
      (unless truncate-lines-before
-       (toggle-truncate-lines 1))
+       (toggle-truncate-lines))
      (unwind-protect
          (progn
            ,@body)
        (unless truncate-lines-before
-         (toggle-truncate-lines 1)))))
+         (toggle-truncate-lines)))))
 #+end_src
 
 ** text scale wrapper

@@ -238,6 +238,9 @@ same for the rest of the documentation btw.
 :ID:       1b3fd6e6-bf2b-4897-8f18-b732f6753cf8
 :END:
 
+the longest line length is essential to fit a part horizontally into a
+given window.
+
 #+begin_src emacs-lisp
 
 ;; find longest line

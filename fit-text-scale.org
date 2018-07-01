@@ -264,14 +264,17 @@ Take at most `fts-consider-max-number-lines' lines into account."
      (while (< n max-line-number)
        (incf n)
        (move-to-window-line n)
+       (let ((hl-line-mode t)) (hl-line-highlight))
        (sit-for 0) ; get visual progress indicator.
        (let ((length-candidate  (save-excursion
                         (move-to-window-line n)
                         (fts--line-width-in-pixel))))
          (when (< max-length length-candidate)
            (setq max-length length-candidate)
-           (setq index-of-max-line-length n))))
-     (move-to-window-line index-of-max-line-length))))
+           (setq index-of-max-line-length n)))
+       (let ((hl-line-mode t)) (hl-line-highlight)))
+     (move-to-window-line index-of-max-line-length)
+     (let ((hl-line-mode nil)) (hl-line-highlight)))))
 #+end_src
 
 ** fit in window

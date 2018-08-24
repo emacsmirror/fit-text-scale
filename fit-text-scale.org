@@ -191,15 +191,19 @@ same for the rest of the documentation btw.
 #+end_src
 
 #+begin_src emacs-lisp
+(defvar fts-hesitation 0)
+#+end_src
+
+#+begin_src emacs-lisp
 (defun fts--increase ()
   (text-scale-increase 1)
-  (sit-for 0.2))
+  (sit-for fts-hesitation))
 #+end_src
 
 #+begin_src emacs-lisp
 (defun fts--decrease ()
   (text-scale-decrease 1)
-  (sit-for 0.2))
+  (sit-for fts-hesitation))
 #+end_src
 
 ** measurement

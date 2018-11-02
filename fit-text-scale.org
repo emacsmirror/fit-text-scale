@@ -289,10 +289,8 @@ Take at most `fts-consider-max-number-lines' lines into account."
 Take at most `fts-consider-max-number-lines' lines into account."
   (interactive)
   (fts-with-truncated-lines
-   (let* ((max-line-number
-           (min (save-excursion (move-to-window-line -1))
-                fts-consider-max-number-lines))
-          (point-in-bottom-window-line (save-excursion (move-to-window-line -1) (point)))
+   (let* ((point-in-bottom-window-line
+           (save-excursion (move-to-window-line -1) (point)))
           (n 0)
           (max-length (fts--line-width-in-pixel))
           (target (point)))

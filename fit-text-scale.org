@@ -283,6 +283,29 @@ Take at most `fts-consider-max-number-lines' lines into account."
        (let ((hl-line-mode t)) (hl-line-highlight)))
      (move-to-window-line index-of-max-line-length)
      (let ((hl-line-mode nil)) (hl-line-highlight)))))
+
+(defun fts-goto-visible-line-of-max-length-down ()
+  "Set point into longest visible line looking downwards.
+Take at most `fts-consider-max-number-lines' lines into account."
+  (interactive)
+  (fts-with-truncated-lines
+   (let* ((max-line-number
+           (min (save-excursion (move-to-window-line -1))
+                fts-consider-max-number-lines))
+          (point-in-bottom-window-line (save-excursion (move-to-window-line -1) (point)))
+          (n 0)
+          (max-length (fts--line-width-in-pixel))
+          (target (point)))
+     (while (and (< n fts-consider-max-number-lines)
+                 (<= (point) point-in-bottom-window-line)
+                 (not (eobp)))
+       (forward-line)
+       (incf n)
+       (let ((length-candidate (fts--line-width-in-pixel)))
+         (when (< max-length length-candidate)
+           (setq max-length length-candidate)
+           (setq target (point)))))
+     (goto-char target))))
 #+end_src
 
 ** fit in window
@@ -348,7 +371,7 @@ If this function gives a text scale not as big as it could be
 then the next call might."
   (interactive)
   (save-excursion
-    (fts-goto-visible-line-of-max-length)
+    (fts-goto-visible-line-of-max-length-down)
     (fts-max-font-size-see-line)))
 #+end_src
 

@@ -73,8 +73,7 @@ With these settings
 - C-u C-x C-& binds to ~fts-max-font-size-see-line~.
 - C-x C-* binds to ~fts-max-font-size-see-buffer~.
 
-Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x
-C-0 }.
+Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x C-0 }.
 
 ** licence
 :PROPERTIES:
@@ -100,11 +99,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #+end_src
 
 * tasks
-** TODO investigate irritations with org-links
 
-hidden text can be irritating for sometimes e.g. org links.
+** open
+*** TODO investigate irritations with org-links
 
-** DONE keep license information DRY :ARCHIVE:
+- hidden text can be irritating for sometimes e.g. org links.
+** closed
+
+*** DONE keep license information DRY :ARCHIVE:
 CLOSED: [2018-06-28 Thu 14:34]
 :LOGBOOK:
 - CLOSING NOTE [2018-06-28 Thu 14:34]

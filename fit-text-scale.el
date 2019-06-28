@@ -230,8 +230,8 @@ When at minimal text scale stay there and inform."
 ;;;###autoload
 (defun fts-max-font-size-see-line ()
   "Use the maximal text scale to fit the line in the window.
-If this function gives a text scale not as big as it could be
-then the next call might.
+Pracmatic tip: if this function gives a text scale not as big as
+it could be then a further call might.
 
 DO try to get rid of the factor trick thing below.  this might be
 when `text-rescale-line-width-in-pixel' is fixed."
@@ -260,6 +260,7 @@ If this function gives a text scale not as big as it could be
 then the next call might."
   (interactive)
   (save-excursion
+    (move-to-window-line 0)
     (fts-goto-visible-line-of-max-length-down)
     (fts-max-font-size-see-line)))
 ;; fit in window:1 ends here

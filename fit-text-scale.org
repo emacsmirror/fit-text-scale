@@ -1,25 +1,26 @@
 
-* about
+
+* fit-text-scale
 :PROPERTIES:
 :EXPORT_FILE_NAME: README.org
 :END:
 
-fit-text-scale
-
-** what
+** What
 
 #+name: documentation-what
 #+begin_src text
-~fit-text-scale~ trys to help with setting the scale (aka zoom outside
-Emacs.)
+~fit-text-scale~ is an automation to set the scale so that the text
+uses the maximal space to fit in the window.
 
-Up to now there are three functions:
+Scale is the scale of the font.
+
+There are three functions:
 - Choose the maximal text scale to still see the full line.
 - Choose the maximal text scale to still see the full lines.
 - Choose the maximal text scale to still see all lines of a buffer.
 #+end_src
 
-** usage
+** Usage
 
 #+name: documentation-usage
 #+begin_src text
@@ -36,16 +37,16 @@ Use
     fits in current window.
 #+end_src
 
-There are cases when the automatism fails.  In case use the classical
-text-scale functions to in- and decrease the scaling.  Try keys ~C-x
-C-+~ and ~C-x C--~.
+There are cases when the automatism fails.  Use ~C-g~ to break the
+automatism.  Use the classical text-scale functions to increase and
+decrease the scale.  Try keys ~C-x C-+~ and ~C-x C--~.
 
 *** Keybindings
 :PROPERTIES:
 :ID:       ddba5bdd-1c7b-44ed-bd6a-e249e5426de4
 :END:
 
-Keybindings could be set as
+Proposed keybindings are
 
 #+begin_src emacs-lisp :tangle no
 
@@ -101,9 +102,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * tasks
 
 ** open
+
 *** TODO investigate irritations with org-links
 
 - hidden text can be irritating for sometimes e.g. org links.
+
 ** closed
 
 *** DONE keep license information DRY :ARCHIVE:

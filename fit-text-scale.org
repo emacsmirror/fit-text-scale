@@ -81,9 +81,11 @@ Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x C-0 }.
 :ID:       e8942229-c677-4ec0-9543-ff7ce3e47ce5
 :END:
 
+GPL 3
+
 #+name: license
 #+begin_src text :tangle LICENSE
-Copyright (C) 2017, 2018 Marco Wahl
+Copyright (C) 2017-2019 Marco Wahl
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

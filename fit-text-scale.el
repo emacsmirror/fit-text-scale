@@ -7,7 +7,7 @@
 
 ;; [[id:dc521e3c-123a-429f-9ad2-8451c1a11035][prologue:2]]
 
-;; Copyright (C) 2017, 2018 Marco Wahl
+;; Copyright (C) 2017-2019 Marco Wahl
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,10 +24,12 @@
 
 ;;; Commentary:
 
-;; ~fit-text-scale~ trys to help with setting the scale (aka zoom outside
-;; Emacs.)
+;; ~fit-text-scale~ is an automation to set the scale so that the text
+;; uses the maximal space to fit in the window.
 ;; 
-;; Up to now there are three functions:
+;; Scale is the scale of the font.
+;; 
+;; There are three functions:
 ;; - Choose the maximal text scale to still see the full line.
 ;; - Choose the maximal text scale to still see the full lines.
 ;; - Choose the maximal text scale to still see all lines of a buffer.
@@ -241,7 +243,7 @@ when `text-rescale-line-width-in-pixel' is fixed."
    (let
        ((factor 1.05)
         (min-width 23)
-        (fts-max-amount 20)
+        (fts-max-amount 15)
         (fts-min-amount -12))
      (save-excursion
        (while (and (< text-scale-mode-amount fts-max-amount)

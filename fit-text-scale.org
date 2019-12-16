@@ -355,7 +355,7 @@ when `text-rescale-line-width-in-pixel' is fixed."
    (let
        ((factor 1.05)
         (min-width 23)
-        (fts-max-amount 20)
+        (fts-max-amount 15)
         (fts-min-amount -12))
      (save-excursion
        (while (and (< text-scale-mode-amount fts-max-amount)

@@ -1,9 +1,6 @@
 
 
 * fit-text-scale
-:PROPERTIES:
-:EXPORT_FILE_NAME: README.org
-:END:
 
 ** What
 
@@ -100,28 +97,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #+end_src
-
-* tasks
-
-** open
-
-*** TODO investigate irritations with org-links
-
-- hidden text can be irritating for sometimes e.g. org links.
-
-** closed
-
-*** DONE keep license information DRY :ARCHIVE:
-CLOSED: [2018-06-28 Thu 14:34]
-:LOGBOOK:
-- CLOSING NOTE [2018-06-28 Thu 14:34]
-:END:
-
-the license information now lives in a source block in the about
-section.  this block is referenced from the code and get's weaved in
-at the tangling.
-
-same for the rest of the documentation btw.
 
 * code
 :PROPERTIES:
@@ -392,3 +367,29 @@ then the next call might."
 
 ;;; fit-text-scale.el ends here
 #+end_src
+
+* tasks
+
+** open
+
+*** TODO investigate irritations with org-links
+
+- hidden text can be irritating for sometimes e.g. org links.
+
+** closed
+
+*** DONE fts-max-font-size-see-lines only consider lines down
+
+- was: starting with first visible line in the window.
+
+*** DONE keep license information DRY :ARCHIVE:
+CLOSED: [2018-06-28 Thu 14:34]
+:LOGBOOK:
+- CLOSING NOTE [2018-06-28 Thu 14:34]
+:END:
+
+the license information now lives in a source block in the about
+section.  this block is referenced from the code and get's weaved in
+at the tangling.
+
+same for the rest of the documentation btw.

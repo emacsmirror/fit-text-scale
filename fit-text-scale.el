@@ -5,7 +5,7 @@
 ;; Author: <marcowahlsoft@gmail.com>
 ;; Keywords: convenience
 
-;; [[id:dc521e3c-123a-429f-9ad2-8451c1a11035][prologue:2]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*prologue][prologue:2]]
 
 ;; Copyright (C) 2017-2019 Marco Wahl
 ;; 
@@ -55,7 +55,7 @@
 ;; :END:
 
 
-;; [[id:1418004a-5c5f-4c19-9738-78b7efbef3dc][truncated lines environment:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*truncated lines environment][truncated lines environment:1]]
 
 (defmacro fts-with-truncated-lines (&rest body)
   (let ((truncate-lines-before (gensym)))
@@ -75,22 +75,22 @@
 ;; :END:
 
 
-;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][text scale wrapper:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:1]]
 
 ;; text scale wrapper
 ;; text scale wrapper:1 ends here
 
-;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][text scale wrapper:2]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:2]]
 (defvar fts-hesitation 0)
 ;; text scale wrapper:2 ends here
 
-;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][text scale wrapper:3]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:3]]
 (defun fts--increase ()
   (text-scale-increase 1)
   (sit-for fts-hesitation))
 ;; text scale wrapper:3 ends here
 
-;; [[id:17ed5806-2afd-4771-8495-89558378e2d5][text scale wrapper:4]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:4]]
 (defun fts--decrease ()
   (text-scale-decrease 1)
   (sit-for fts-hesitation))
@@ -102,7 +102,7 @@
 ;; :END:
 
 
-;; [[id:6f4c44ee-0f77-40d5-9ba2-d1d384fcc9ca][measurement:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*measurement][measurement:1]]
 
 ;; measurement
 
@@ -141,7 +141,7 @@
 ;; given window.
 
 
-;; [[id:1b3fd6e6-bf2b-4897-8f18-b732f6753cf8][find longest line:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*find longest line][find longest line:1]]
 
 ;; find longest line
 
@@ -204,7 +204,7 @@ Take at most `fts-consider-max-number-lines' lines into account."
 ;; :END:
 
 
-;; [[id:9df260fe-b9dc-4444-8fab-56ea1cb9ebd5][fit in window:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*fit in window][fit in window:1]]
 
 ;; fit in window
 ;;;###autoload
@@ -257,12 +257,11 @@ when `text-rescale-line-width-in-pixel' is fixed."
 
 ;;;###autoload
 (defun fts-max-font-size-see-lines ()
-  "Use the maximal text scale to fit the lines on the screen in the window.
+  "Use the maximal text scale to fit the line and lines below in the window.
 If this function gives a text scale not as big as it could be
 then the next call might."
   (interactive)
   (save-excursion
-    (move-to-window-line 0)
     (fts-goto-visible-line-of-max-length-down)
     (fts-max-font-size-see-line)))
 ;; fit in window:1 ends here
@@ -273,7 +272,7 @@ then the next call might."
 ;; :END:
 
 
-;; [[id:1ee365eb-e9ce-4ac3-ac14-1b2361d55ed8][epilogue:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*epilogue][epilogue:1]]
 
 (provide 'fit-text-scale)
 

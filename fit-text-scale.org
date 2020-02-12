@@ -354,10 +354,10 @@ When at minimal text scale stay there and inform."
             "programming logic error.  this is a bad sign.  please report the issue.")
     (while (and (< text-scale-mode-amount fts-max-amount)
                 (= (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (text-scale-increase 1))
+      (fts--increase))
     (while  (and (< fts-min-amount text-scale-mode-amount)
                  (< (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (text-scale-decrease 1))))
+      (fts--decrease))))
 
 ;;;###autoload
 (defun fts-max-font-size-fit-lines ()

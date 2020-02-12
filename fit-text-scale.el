@@ -24,6 +24,7 @@
 
 ;;; Commentary:
 
+;; 
 ;; You are too lazy to do the C-x C-+ + + +... - - - - ... + + - dance
 ;; all the time to see the FULL line in maximal font size?
 ;; 
@@ -41,24 +42,8 @@
 ;; - Choose the maximal text scale to still see the full lines.
 ;; - Choose the maximal text scale to still see all lines of a buffer.
 
-;; Use
-;; 
-;; - ~M-x fts-max-font-size-fit-line~
-;;   - Choose about maximal text scale so that the *current* line still
-;;     fits in current window.
-;; - ~M-x fts-max-font-size-fit-lines~
-;;   - Choose about maximal text scale so that longest visible at cursor
-;;     and below line still fits in current window.
-;; - ~M-x fts-max-font-size-fit-buffer~
-;;   - Choose about maximal text scale so that the buffer content still
-;;     fits in current window.
-;; - ~C-x C-0~ (Good old ~text-scale-adjust~.)
-;;   - Switch back to the default size when control about the sizes has
-;;     been lost.
-;; - ~C-x C-+~ + - and ~C-x C--~ - + for fine tuning..
-;; - ~C-g C-g C-g~... (hit the keyboard hard!) if something, hrm, hangs.
-
-;; Proposed keybindings are
+;; The following code in an init file binds the
+;; functionality to keys.
 ;; 
 ;; #+begin_src emacs-lisp
 ;; (global-set-key
@@ -67,8 +52,8 @@
 ;;    (interactive "P")
 ;;    (apply
 ;;     (if arg
-;;         #'fts-max-font-size-fit-lines
-;;       #'fts-max-font-size-fit-line)
+;;         #'fts-max-font-size-fit-line
+;;       #'fts-max-font-size-fit-lines)
 ;;     nil)))
 ;; 
 ;; (global-set-key
@@ -78,11 +63,25 @@
 ;; 
 ;; With these settings there is
 ;; 
-;; - C-x C-& :: to see the line with maximal font size.
-;; - C-u C-x C-& :: to use a heuristic to choose the font, i.e. consider further lines below.
-;; - C-x C-* :: to adjust the font size to see the whole buffer.
+;; - ~C-x C-&~
+;;   - Choose maximal text scale so that the longest line
+;;     below still fits in current window.
+;; - ~C-u C-x C-&~
+;;   - Choose maximal text scale so that the *current* line still
+;;     fits in the window.
+;; - ~C-x C-*
+;;   - Choose maximal text scale so that the vertical buffer content
+;;     still fits into current window.
+;; - ~C-x C-0~ (Already given.  This is good old ~text-scale-adjust~.)
+;;   - Switch back to the default size when control about the sizes has
+;;     been lost.
+;; - ~C-x C-+~ + - and ~C-x C--~ - + for fine tuning.  (Also given.)
+;; - ~C-g C-g C-g~... (hit the keyboard hard!) if something, hrm, hangs.
+
+;; There are some parameters to fine tune the functionality.  Check it out with
 ;; 
-;; Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x C-0 }.
+;;     M-x customize-group fit-text-scale
+;; 
 
 ;;; Code:
 ;; prologue:2 ends here
@@ -107,6 +106,36 @@
           (toggle-truncate-lines))))))
 ;; truncated lines environment:1 ends here
 
+;; customizables
+
+
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*customizables][customizables:1]]
+
+;; customizables
+;; customizables:1 ends here
+
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*customizables][customizables:2]]
+(defcustom fts-hesitation 0.01
+  "Duration to wait til next text scale change.  Smallest sane value is 0 which should result in the fastest animation.  Only effective when `fts-graphic-suger' is on."
+  :type 'number
+  :group 'fit-text-scale)
+
+(defcustom fts-graphic-suger t
+  "Animate the zoom.  `fts-hesitationOnly' controls the animation speed."
+  :type 'boolean
+  :group 'fit-text-scale)
+
+(defcustom fts-max-amount 23
+  "Maximum achievable text scale with this program."
+  :type 'number
+  :group 'fit-text-scale)
+
+(defcustom fts-min-amount -12
+  "Minimum achievable text scale with this program."
+  :type 'number
+  :group 'fit-text-scale)
+;; customizables:2 ends here
+
 ;; text scale wrapper
 ;; :PROPERTIES:
 ;; :ID:       17ed5806-2afd-4771-8495-89558378e2d5
@@ -119,20 +148,16 @@
 ;; text scale wrapper:1 ends here
 
 ;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:2]]
-(defvar fts-hesitation 0)
-;; text scale wrapper:2 ends here
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:3]]
 (defun fts--increase ()
   (text-scale-increase 1)
-  (sit-for fts-hesitation))
-;; text scale wrapper:3 ends here
+  (when fts-graphic-suger
+    (sit-for fts-hesitation)))
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:4]]
 (defun fts--decrease ()
   (text-scale-decrease 1)
-  (sit-for fts-hesitation))
-;; text scale wrapper:4 ends here
+  (when fts-graphic-suger
+    (sit-for fts-hesitation)))
+;; text scale wrapper:2 ends here
 
 ;; measurement
 ;; :PROPERTIES:
@@ -145,6 +170,11 @@
 ;; measurement
 
 (require 'face-remap) ; text-scale- functions
+
+(defun fts--line-length ()
+  "Calculate line width containing point in chars."
+  (- (save-excursion (end-of-visible-line) (point))
+     (save-excursion (beginning-of-line) (point))))
 
 (defun fts--line-width-in-pixel ()
   "Calculate line width containing point in pixel."
@@ -222,17 +252,17 @@ Take at most `fts-consider-max-number-lines' lines into account."
    (let* ((point-in-bottom-window-line
            (save-excursion (move-to-window-line -1) (point)))
           (n 0)
-          (max-length (fts--line-width-in-pixel))
+          (max-length (fts--line-length))
           (target (point)))
      (while (and (< n fts-consider-max-number-lines)
                  (<= (point) point-in-bottom-window-line)
                  (not (eobp)))
-       (forward-line)
-       (incf n)
-       (let ((length-candidate (fts--line-width-in-pixel)))
+       (let ((length-candidate (fts--line-length)))
          (when (< max-length length-candidate)
            (setq max-length length-candidate)
-           (setq target (point)))))
+           (setq target (point))))
+       (forward-line)
+       (incf n))
      (goto-char target))))
 ;; find longest line:1 ends here
 
@@ -269,29 +299,21 @@ When at minimal text scale stay there and inform."
 
 ;;;###autoload
 (defun fts-max-font-size-fit-line ()
-  "Use the maximal text scale to fit the line in the window.
-Pracmatic tip: if this function gives a text scale not as big as
-it could be then a further call might.
-
-DO try to get rid of the factor trick thing below.  this might be
-when `text-rescale-line-width-in-pixel' is fixed."
+  "Use the maximal text scale to fit the line in the window."
   (interactive)
   (text-scale-mode)
-  (fts-with-truncated-lines
-   (let
-       ((factor 1.05)
-        (min-width 23)
-        (fts-max-amount 15)
-        (fts-min-amount -12))
-     (save-excursion
-       (while (and (< text-scale-mode-amount fts-max-amount)
-                   (<= (* factor (max min-width (fts--line-width-in-pixel)))
-                       (fts--window-width-in-pixel)))
-         (fts--increase))
-       (while (and (< fts-min-amount text-scale-mode-amount)
-                   (< (fts--window-width-in-pixel)
-                      (* factor (max min-width (fts--line-width-in-pixel)))))
-         (fts--decrease))))))
+  (beginning-of-line)
+  (let ((eol (progn (save-excursion (end-of-visible-line)
+                                    (point)))))
+    (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
+                eol)
+            "programming logic error.  this is a bad sign.  please report the issue.")
+    (while (and (< text-scale-mode-amount fts-max-amount)
+                (= (progn (save-excursion (end-of-visual-line) (point))) eol))
+      (fts--increase))
+    (while  (and (< fts-min-amount text-scale-mode-amount)
+                 (< (progn (save-excursion (end-of-visual-line) (point))) eol))
+      (fts--decrease))))
 
 ;;;###autoload
 (defun fts-max-font-size-fit-lines ()

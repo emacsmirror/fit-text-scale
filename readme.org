@@ -6,6 +6,7 @@
 
 #+name: documentation-why
 #+begin_src text
+
 You are too lazy to do the C-x C-+ + + +... - - - - ... + + - dance
 all the time to see the FULL line in maximal font size?
 
@@ -33,32 +34,8 @@ There are three functions:
 
 #+name: documentation-usage
 #+begin_src org
-Use
-
-- ~M-x fts-max-font-size-fit-line~
-  - Choose about maximal text scale so that the *current* line still
-    fits in current window.
-- ~M-x fts-max-font-size-fit-lines~
-  - Choose about maximal text scale so that longest visible at cursor
-    and below line still fits in current window.
-- ~M-x fts-max-font-size-fit-buffer~
-  - Choose about maximal text scale so that the buffer content still
-    fits in current window.
-- ~C-x C-0~ (Good old ~text-scale-adjust~.)
-  - Switch back to the default size when control about the sizes has
-    been lost.
-- ~C-x C-+~ + - and ~C-x C--~ - + for fine tuning..
-- ~C-g C-g C-g~... (hit the keyboard hard!) if something, hrm, hangs.
-#+end_src
-
-*** Keybindings
-:PROPERTIES:
-:ID:       ddba5bdd-1c7b-44ed-bd6a-e249e5426de4
-:END:
-
-#+name: documentation-keybindings
-#+begin_src org
-Proposed keybindings are
+The following code in an init file binds the
+functionality to keys.
 
 ,#+begin_src emacs-lisp
 (global-set-key
@@ -67,8 +44,8 @@ Proposed keybindings are
    (interactive "P")
    (apply
     (if arg
-        #'fts-max-font-size-fit-lines
-      #'fts-max-font-size-fit-line)
+        #'fts-max-font-size-fit-line
+      #'fts-max-font-size-fit-lines)
     nil)))
 
 (global-set-key
@@ -78,11 +55,30 @@ Proposed keybindings are
 
 With these settings there is
 
-- C-x C-& :: to see the line with maximal font size.
-- C-u C-x C-& :: to use a heuristic to choose the font, i.e. consider further lines below.
-- C-x C-* :: to adjust the font size to see the whole buffer.
+- ~C-x C-&~
+  - Choose maximal text scale so that the longest line
+    below still fits in current window.
+- ~C-u C-x C-&~
+  - Choose maximal text scale so that the *current* line still
+    fits in the window.
+- ~C-x C-*
+  - Choose maximal text scale so that the vertical buffer content
+    still fits into current window.
+- ~C-x C-0~ (Already given.  This is good old ~text-scale-adjust~.)
+  - Switch back to the default size when control about the sizes has
+    been lost.
+- ~C-x C-+~ + - and ~C-x C--~ - + for fine tuning.  (Also given.)
+- ~C-g C-g C-g~... (hit the keyboard hard!) if something, hrm, hangs.
+#+end_src
 
-Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x C-0 }.
+*** Customization
+
+#+name: documentation-customize
+#+begin_src org
+There are some parameters to fine tune the functionality.  Check it out with
+
+    M-x customize-group fit-text-scale
+
 #+end_src
 
 ** licence
@@ -152,7 +148,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; <<documentation-usage>>
 
-;; <<documentation-keybindings>>
+;; <<documentation-customize>>
 
 ;;; Code:
 #+end_src
@@ -178,6 +174,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           (toggle-truncate-lines))))))
 #+end_src
 
+** customizables
+
+#+begin_src emacs-lisp
+
+;; customizables
+#+end_src
+
+#+begin_src emacs-lisp
+(defcustom fts-hesitation 0.01
+  "Duration to wait til next text scale change.  Smallest sane value is 0 which should result in the fastest animation.  Only effective when `fts-graphic-suger' is on."
+  :type 'number
+  :group 'fit-text-scale)
+
+(defcustom fts-graphic-suger t
+  "Animate the zoom.  `fts-hesitationOnly' controls the animation speed."
+  :type 'boolean
+  :group 'fit-text-scale)
+
+(defcustom fts-max-amount 23
+  "Maximum achievable text scale with this program."
+  :type 'number
+  :group 'fit-text-scale)
+
+(defcustom fts-min-amount -12
+  "Minimum achievable text scale with this program."
+  :type 'number
+  :group 'fit-text-scale)
+#+end_src
+
 ** text scale wrapper
 :PROPERTIES:
 :ID:       17ed5806-2afd-4771-8495-89558378e2d5
@@ -188,20 +213,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;; text scale wrapper
 #+end_src
 
-#+begin_src emacs-lisp
-(defvar fts-hesitation 0)
-#+end_src
 
 #+begin_src emacs-lisp
 (defun fts--increase ()
   (text-scale-increase 1)
-  (sit-for fts-hesitation))
-#+end_src
+  (when fts-graphic-suger
+    (sit-for fts-hesitation)))
 
-#+begin_src emacs-lisp
 (defun fts--decrease ()
   (text-scale-decrease 1)
-  (sit-for fts-hesitation))
+  (when fts-graphic-suger
+    (sit-for fts-hesitation)))
 #+end_src
 
 ** measurement
@@ -271,15 +293,15 @@ Take at most `fts-consider-max-number-lines' lines into account."
           (index-of-max-line-length 0)
           (max-length (save-excursion
                         (move-to-window-line n)
-                        (fts--line-length))))
+                        (fts--line-width-in-pixel))))
      (while (< n max-line-number)
        (incf n)
        (move-to-window-line n)
        (let ((hl-line-mode t)) (hl-line-highlight))
        (sit-for 0) ; get visual progress indicator.
        (let ((length-candidate  (save-excursion
-                                  (move-to-window-line n)
-                                  (fts--line-width-in-pixel))))
+                        (move-to-window-line n)
+                        (fts--line-width-in-pixel))))
          (when (< max-length length-candidate)
            (setq max-length length-candidate)
            (setq index-of-max-line-length n)))
@@ -346,18 +368,16 @@ When at minimal text scale stay there and inform."
   (text-scale-mode)
   (beginning-of-line)
   (let ((eol (progn (save-excursion (end-of-visible-line)
-                                    (point))))
-        (fts-max-amount 25)
-        (fts-min-amount -12))
+                                    (point)))))
     (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
                 eol)
             "programming logic error.  this is a bad sign.  please report the issue.")
     (while (and (< text-scale-mode-amount fts-max-amount)
                 (= (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (text-scale-increase 1))
+      (fts--increase))
     (while  (and (< fts-min-amount text-scale-mode-amount)
                  (< (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (text-scale-decrease 1))))
+      (fts--decrease))))
 
 ;;;###autoload
 (defun fts-max-font-size-fit-lines ()

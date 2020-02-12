@@ -295,17 +295,17 @@ Take at most `fts-consider-max-number-lines' lines into account."
    (let* ((point-in-bottom-window-line
            (save-excursion (move-to-window-line -1) (point)))
           (n 0)
-          (max-length (fts--line-width-in-pixel))
+          (max-length (fts--line-length))
           (target (point)))
      (while (and (< n fts-consider-max-number-lines)
                  (<= (point) point-in-bottom-window-line)
                  (not (eobp)))
-       (forward-line)
-       (incf n)
-       (let ((length-candidate (fts--line-width-in-pixel)))
+       (let ((length-candidate (fts--line-length)))
          (when (< max-length length-candidate)
            (setq max-length length-candidate)
-           (setq target (point)))))
+           (setq target (point))))
+       (forward-line)
+       (incf n))
      (goto-char target))))
 #+end_src
 

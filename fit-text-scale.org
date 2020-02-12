@@ -341,29 +341,23 @@ When at minimal text scale stay there and inform."
 
 ;;;###autoload
 (defun fts-max-font-size-fit-line ()
-  "Use the maximal text scale to fit the line in the window.
-Pracmatic tip: if this function gives a text scale not as big as
-it could be then a further call might.
-
-DO try to get rid of the factor trick thing below.  this might be
-when `text-rescale-line-width-in-pixel' is fixed."
+  "Use the maximal text scale to fit the line in the window."
   (interactive)
   (text-scale-mode)
-  (fts-with-truncated-lines
-   (let
-       ((factor 1.05)
-        (min-width 23)
-        (fts-max-amount 15)
+  (beginning-of-line)
+  (let ((eol (progn (save-excursion (end-of-visible-line)
+                                    (point))))
+        (fts-max-amount 25)
         (fts-min-amount -12))
-     (save-excursion
-       (while (and (< text-scale-mode-amount fts-max-amount)
-                   (<= (* factor (max min-width (fts--line-width-in-pixel)))
-                       (fts--window-width-in-pixel)))
-         (fts--increase))
-       (while (and (< fts-min-amount text-scale-mode-amount)
-                   (< (fts--window-width-in-pixel)
-                      (* factor (max min-width (fts--line-width-in-pixel)))))
-         (fts--decrease))))))
+    (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
+                eol)
+            "programming logic error.  this is a bad sign.  please report the issue.")
+    (while (and (< text-scale-mode-amount fts-max-amount)
+                (= (progn (save-excursion (end-of-visual-line) (point))) eol))
+      (text-scale-increase 1))
+    (while  (and (< fts-min-amount text-scale-mode-amount)
+                 (< (progn (save-excursion (end-of-visual-line) (point))) eol))
+      (text-scale-decrease 1))))
 
 ;;;###autoload
 (defun fts-max-font-size-fit-lines ()

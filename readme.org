@@ -215,6 +215,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (require 'face-remap) ; text-scale- functions
 
+(defun fts--line-length ()
+  "Calculate line width containing point in chars."
+  (- (save-excursion (end-of-visible-line) (point))
+     (save-excursion (beginning-of-line) (point))))
+
 (defun fts--line-width-in-pixel ()
   "Calculate line width containing point in pixel."
   (save-excursion
@@ -266,15 +271,15 @@ Take at most `fts-consider-max-number-lines' lines into account."
           (index-of-max-line-length 0)
           (max-length (save-excursion
                         (move-to-window-line n)
-                        (fts--line-width-in-pixel))))
+                        (fts--line-length))))
      (while (< n max-line-number)
        (incf n)
        (move-to-window-line n)
        (let ((hl-line-mode t)) (hl-line-highlight))
        (sit-for 0) ; get visual progress indicator.
        (let ((length-candidate  (save-excursion
-                        (move-to-window-line n)
-                        (fts--line-width-in-pixel))))
+                                  (move-to-window-line n)
+                                  (fts--line-width-in-pixel))))
          (when (< max-length length-candidate)
            (setq max-length length-candidate)
            (setq index-of-max-line-length n)))
@@ -290,17 +295,17 @@ Take at most `fts-consider-max-number-lines' lines into account."
    (let* ((point-in-bottom-window-line
            (save-excursion (move-to-window-line -1) (point)))
           (n 0)
-          (max-length (fts--line-width-in-pixel))
+          (max-length (fts--line-length))
           (target (point)))
      (while (and (< n fts-consider-max-number-lines)
                  (<= (point) point-in-bottom-window-line)
                  (not (eobp)))
-       (forward-line)
-       (incf n)
-       (let ((length-candidate (fts--line-width-in-pixel)))
+       (let ((length-candidate (fts--line-length)))
          (when (< max-length length-candidate)
            (setq max-length length-candidate)
-           (setq target (point)))))
+           (setq target (point))))
+       (forward-line)
+       (incf n))
      (goto-char target))))
 #+end_src
 
@@ -336,29 +341,23 @@ When at minimal text scale stay there and inform."
 
 ;;;###autoload
 (defun fts-max-font-size-fit-line ()
-  "Use the maximal text scale to fit the line in the window.
-Pracmatic tip: if this function gives a text scale not as big as
-it could be then a further call might.
-
-DO try to get rid of the factor trick thing below.  this might be
-when `text-rescale-line-width-in-pixel' is fixed."
+  "Use the maximal text scale to fit the line in the window."
   (interactive)
   (text-scale-mode)
-  (fts-with-truncated-lines
-   (let
-       ((factor 1.05)
-        (min-width 23)
-        (fts-max-amount 15)
+  (beginning-of-line)
+  (let ((eol (progn (save-excursion (end-of-visible-line)
+                                    (point))))
+        (fts-max-amount 25)
         (fts-min-amount -12))
-     (save-excursion
-       (while (and (< text-scale-mode-amount fts-max-amount)
-                   (<= (* factor (max min-width (fts--line-width-in-pixel)))
-                       (fts--window-width-in-pixel)))
-         (fts--increase))
-       (while (and (< fts-min-amount text-scale-mode-amount)
-                   (< (fts--window-width-in-pixel)
-                      (* factor (max min-width (fts--line-width-in-pixel)))))
-         (fts--decrease))))))
+    (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
+                eol)
+            "programming logic error.  this is a bad sign.  please report the issue.")
+    (while (and (< text-scale-mode-amount fts-max-amount)
+                (= (progn (save-excursion (end-of-visual-line) (point))) eol))
+      (text-scale-increase 1))
+    (while  (and (< fts-min-amount text-scale-mode-amount)
+                 (< (progn (save-excursion (end-of-visual-line) (point))) eol))
+      (text-scale-decrease 1))))
 
 ;;;###autoload
 (defun fts-max-font-size-fit-lines ()

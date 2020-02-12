@@ -5,7 +5,7 @@
 ;; Author: <marcowahlsoft@gmail.com>
 ;; Keywords: convenience
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*prologue][prologue:2]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*prologue][prologue:2]]
 
 ;; Copyright (C) 2017-2020 Marco Wahl
 ;; 
@@ -79,9 +79,8 @@
 ;; With these settings there is
 ;; 
 ;; - C-x C-& :: to see the line with maximal font size.
-;; - C-u C-x C-& :: to use a heuristic to choose the font.  It considers
-;;   additionally some lines below.
-;; - C-x C-* :: to attempt to see the whole buffer.
+;; - C-u C-x C-& :: to use a heuristic to choose the font, i.e. consider further lines below.
+;; - C-x C-* :: to adjust the font size to see the whole buffer.
 ;; 
 ;; Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x C-0 }.
 
@@ -94,7 +93,7 @@
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*truncated lines environment][truncated lines environment:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*truncated lines environment][truncated lines environment:1]]
 
 (defmacro fts-with-truncated-lines (&rest body)
   (let ((truncate-lines-before (gensym)))
@@ -114,22 +113,22 @@
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*text scale wrapper][text scale wrapper:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:1]]
 
 ;; text scale wrapper
 ;; text scale wrapper:1 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*text scale wrapper][text scale wrapper:2]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:2]]
 (defvar fts-hesitation 0)
 ;; text scale wrapper:2 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*text scale wrapper][text scale wrapper:3]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:3]]
 (defun fts--increase ()
   (text-scale-increase 1)
   (sit-for fts-hesitation))
 ;; text scale wrapper:3 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*text scale wrapper][text scale wrapper:4]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:4]]
 (defun fts--decrease ()
   (text-scale-decrease 1)
   (sit-for fts-hesitation))
@@ -141,7 +140,7 @@
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*measurement][measurement:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*measurement][measurement:1]]
 
 ;; measurement
 
@@ -180,7 +179,7 @@
 ;; given window.
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*find longest line][find longest line:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*find longest line][find longest line:1]]
 
 ;; find longest line
 
@@ -243,7 +242,7 @@ Take at most `fts-consider-max-number-lines' lines into account."
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*fit in window][fit in window:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*fit in window][fit in window:1]]
 
 ;; fit in window
 ;;;###autoload
@@ -311,7 +310,7 @@ then the next call might."
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*epilogue][epilogue:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*epilogue][epilogue:1]]
 
 (provide 'fit-text-scale)
 

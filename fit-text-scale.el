@@ -88,6 +88,16 @@
 ;; 
 ;;     M-x customize-group fit-text-scale
 ;; 
+
+;; To install fit-text-scale add the lines (with YOUR installation path)
+;; to your init file.
+;; 
+;; #+begin_src emacs-lisp
+;; (push "/PATH/TO/fit-text-scale" load-path)
+;; (require 'fit-text-scale)
+;; #+end_src
+;; 
+;; Consider to add also the keybindings above.
 
 ;;; Code:
 ;; prologue:2 ends here

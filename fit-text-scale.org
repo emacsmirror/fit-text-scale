@@ -81,7 +81,7 @@ There are some parameters to fine tune the functionality.  Check it out with
 
 #+end_src
 
-** licence
+** Licence
 :PROPERTIES:
 :ID:       e8942229-c677-4ec0-9543-ff7ce3e47ce5
 :END:
@@ -89,8 +89,10 @@ There are some parameters to fine tune the functionality.  Check it out with
 GPL 3
 
 #+name: license
-#+begin_src text :tangle LICENSE
+#+begin_src text :tangle LICENSE :noweb yes
 Copyright (C) 2017-2020 Marco Wahl
+
+<<package-metadata>>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -104,6 +106,28 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#+end_src
+
+** Version
+
+#+name: fit-text-scale-version
+#+begin_src text
+1.0.0
+#+end_src
+
+** Typical Metadata
+
+Author, contact, dependencies.
+
+#+name: package-metadata
+#+begin_src text :noweb yes
+Author: Marco Wahl <marcowahlsoft@gmail.com>
+Maintainer: Marco Wahl <marcowahlsoft@gmail.com>
+Created: 2017
+Version: <<fit-text-scale-version>>
+Package-Requires: ((emacs "25"))
+Keywords: convenience
+URL: https://gitlab.com/marcowahl/fit-text-scale
 #+end_src
 
 * code
@@ -132,8 +156,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t ; eval: (view-mode 1) -*-
 <<note-about-generation>>
 
-;; Author: <marcowahlsoft@gmail.com>
-;; Keywords: convenience
+
 #+end_src
 
 #+begin_src emacs-lisp :noweb yes
@@ -160,20 +183,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 :ID:       1418004a-5c5f-4c19-9738-78b7efbef3dc
 :END:
 
-#+begin_src emacs-lisp
-
-(defmacro fts-with-truncated-lines (&rest body)
-  (let ((truncate-lines-before (gensym)))
-    `(let ((,truncate-lines-before truncate-lines))
-      (unless ,truncate-lines-before
-        (toggle-truncate-lines))
-      (unwind-protect
-          (progn
-            ,@body)
-        (unless ,truncate-lines-before
-          (toggle-truncate-lines))))))
-#+end_src
-
 ** customizables
 
 #+begin_src emacs-lisp
@@ -183,7 +192,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #+begin_src emacs-lisp
 (defcustom fts-hesitation 0.01
-  "Duration to wait til next text scale change.  Smallest sane value is 0 which should result in the fastest animation.  Only effective when `fts-graphic-suger' is on."
+  "Duration to wait til next text scale change.
+Smallest sane value is 0 which should result in the fastest
+animation.  Only effective when `fts-graphic-suger' is on."
   :type 'number
   :group 'fit-text-scale)
 
@@ -201,6 +212,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   "Minimum achievable text scale with this program."
   :type 'number
   :group 'fit-text-scale)
+
+(defcustom fts-consider-max-number-lines 42
+"Maximum number of lines to consider before choosing
+the longest in function `fts-max-font-size-fit-lines'."
+  :type integer
+  :group 'fit-text-scale )
 #+end_src
 
 ** text scale wrapper
@@ -242,23 +259,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   (- (save-excursion (end-of-visible-line) (point))
      (save-excursion (beginning-of-line) (point))))
 
-(defun fts--line-width-in-pixel ()
-  "Calculate line width containing point in pixel."
-  (save-excursion
-    (let* ((start (save-excursion (beginning-of-visual-line) (point)))
-           (end (save-excursion (end-of-visual-line) (point))))
-      (beginning-of-visual-line)
-      (if (and (posn-at-point start) (posn-at-point end))
-          (- (car (posn-x-y (posn-at-point end)))
-             (car (posn-x-y (posn-at-point start))))
-        (1+ (fts--window-width-in-pixel))))))
-
-(defun fts--window-width-in-pixel ()
-  "Return window width in pixel."
-  (let* ((window-inside-pixel-edges (window-inside-pixel-edges)))
-    (- (nth 2 window-inside-pixel-edges)
-       (nth 0 window-inside-pixel-edges))))
-
 (defun fts--buffer-height-fits-in-window-p ()
   (save-excursion
     (goto-char (point-min))
@@ -278,57 +278,26 @@ given window.
 
 ;; find longest line
 
-(defvar fts-consider-max-number-lines 42)
-
 ;;;###autoload
-(defun fts-goto-visible-line-of-max-length ()
-  "Set point into longest visible line.
-Take at most `fts-consider-max-number-lines' lines into account."
-  (interactive)
-  (fts-with-truncated-lines
-   (let* ((max-line-number
-           (min (save-excursion (move-to-window-line -1))
-                fts-consider-max-number-lines))
-          (n 0)
-          (index-of-max-line-length 0)
-          (max-length (save-excursion
-                        (move-to-window-line n)
-                        (fts--line-width-in-pixel))))
-     (while (< n max-line-number)
-       (incf n)
-       (move-to-window-line n)
-       (let ((hl-line-mode t)) (hl-line-highlight))
-       (sit-for 0) ; get visual progress indicator.
-       (let ((length-candidate  (save-excursion
-                        (move-to-window-line n)
-                        (fts--line-width-in-pixel))))
-         (when (< max-length length-candidate)
-           (setq max-length length-candidate)
-           (setq index-of-max-line-length n)))
-       (let ((hl-line-mode t)) (hl-line-highlight)))
-     (move-to-window-line index-of-max-line-length)
-     (let ((hl-line-mode nil)) (hl-line-highlight)))))
-
 (defun fts-goto-visible-line-of-max-length-down ()
   "Set point into longest visible line looking downwards.
 Take at most `fts-consider-max-number-lines' lines into account."
   (interactive)
-  (fts-with-truncated-lines
-   (let* ((point-in-bottom-window-line
-           (save-excursion (move-to-window-line -1) (point)))
-          (n 0)
-          (max-length (fts--line-length))
-          (target (point)))
-     (while (and (< n fts-consider-max-number-lines)
-                 (<= (point) point-in-bottom-window-line)
-                 (not (eobp)))
-       (let ((length-candidate (fts--line-length)))
-         (when (< max-length length-candidate)
-           (setq max-length length-candidate)
-           (setq target (point))))
-       (forward-line)
-       (incf n))
-     (goto-char target))))
+  (let* ((point-in-bottom-window-line
+          (save-excursion (move-to-window-line -1) (point)))
+         (n 0)
+         (max-length (fts--line-length))
+         (target (point)))
+    (while (and (< n fts-consider-max-number-lines)
+                (<= (point) point-in-bottom-window-line)
+                (not (eobp)))
+      (let ((length-candidate (fts--line-length)))
+        (when (< max-length length-candidate)
+          (setq max-length length-candidate)
+          (setq target (point))))
+      (forward-line)
+      (incf n))
+    (goto-char target)))
 #+end_src
 
 ** fit in window

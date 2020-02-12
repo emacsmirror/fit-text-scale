@@ -36,12 +36,12 @@
 
 ;; Use
 ;; 
-;; - ~M-x fts-max-font-size-fit-lines~
-;;   - Choose about maximal text scale so that longest visible line still
-;;     fits in current window.
 ;; - ~M-x fts-max-font-size-fit-line~
 ;;   - Choose about maximal text scale so that the *current* line still
 ;;     fits in current window.
+;; - ~M-x fts-max-font-size-fit-lines~
+;;   - Choose about maximal text scale so that longest visible at cursor
+;;     and below line still fits in current window.
 ;; - ~M-x fts-max-font-size-fit-buffer~
 ;;   - Choose about maximal text scale so that the buffer content still
 ;;     fits in current window.

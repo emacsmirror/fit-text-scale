@@ -215,6 +215,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (require 'face-remap) ; text-scale- functions
 
+(defun fts--line-length ()
+  "Calculate line width containing point in chars."
+  (- (save-excursion (end-of-visible-line) (point))
+     (save-excursion (beginning-of-line) (point))))
+
 (defun fts--line-width-in-pixel ()
   "Calculate line width containing point in pixel."
   (save-excursion

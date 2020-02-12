@@ -81,6 +81,23 @@ There are some parameters to fine tune the functionality.  Check it out with
 
 #+end_src
 
+** Install
+
+#+name: documentation-install
+#+begin_src org :tangle no
+To install fit-text-scale add the lines (with your installation path)
+to your init file.
+
+,#+begin_src emacs-lisp
+(push "/PATH/TO/fit-text-scale" load-path)
+(require 'fit-text-scale)
+,#+end_src
+
+Consider to add also the keybindings above.
+#+end_src
+
+This could get a package some day.
+
 ** Licence
 :PROPERTIES:
 :ID:       e8942229-c677-4ec0-9543-ff7ce3e47ce5
@@ -172,6 +189,8 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 ;; <<documentation-usage>>
 
 ;; <<documentation-customize>>
+
+;; <<documentation-install>>
 
 ;;; Code:
 #+end_src

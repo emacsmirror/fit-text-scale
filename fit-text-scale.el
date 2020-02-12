@@ -2,12 +2,18 @@
 
 ;; THIS FILE HAS BEEN GENERATED.
 
-;; Author: <marcowahlsoft@gmail.com>
-;; Keywords: convenience
 
 ;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*prologue][prologue:2]]
 
 ;; Copyright (C) 2017-2020 Marco Wahl
+;; 
+;; Author: Marco Wahl <marcowahlsoft@gmail.com>
+;; Maintainer: Marco Wahl <marcowahlsoft@gmail.com>
+;; Created: 2017
+;; Version: 1.0.0
+;; Package-Requires: ((emacs "25"))
+;; Keywords: convenience
+;; URL: https://gitlab.com/marcowahl/fit-text-scale
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -86,26 +92,6 @@
 ;;; Code:
 ;; prologue:2 ends here
 
-;; truncated lines environment
-;; :PROPERTIES:
-;; :ID:       1418004a-5c5f-4c19-9738-78b7efbef3dc
-;; :END:
-
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*truncated lines environment][truncated lines environment:1]]
-
-(defmacro fts-with-truncated-lines (&rest body)
-  (let ((truncate-lines-before (gensym)))
-    `(let ((,truncate-lines-before truncate-lines))
-      (unless ,truncate-lines-before
-        (toggle-truncate-lines))
-      (unwind-protect
-          (progn
-            ,@body)
-        (unless ,truncate-lines-before
-          (toggle-truncate-lines))))))
-;; truncated lines environment:1 ends here
-
 ;; customizables
 
 
@@ -116,12 +102,14 @@
 
 ;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*customizables][customizables:2]]
 (defcustom fts-hesitation 0.01
-  "Duration to wait til next text scale change.  Smallest sane value is 0 which should result in the fastest animation.  Only effective when `fts-graphic-suger' is on."
+  "Duration to wait til next text scale change.
+Smallest sane value is 0 which should result in the fastest
+animation.  Only effective when `fts-graphic-suger' is on."
   :type 'number
   :group 'fit-text-scale)
 
 (defcustom fts-graphic-suger t
-  "Animate the zoom.  `fts-hesitationOnly' controls the animation speed."
+  "Animate the zoom.  `fts-hesitation' controls the animation speed."
   :type 'boolean
   :group 'fit-text-scale)
 
@@ -134,6 +122,12 @@
   "Minimum achievable text scale with this program."
   :type 'number
   :group 'fit-text-scale)
+
+(defcustom fts-consider-max-number-lines 42
+"Maximum number of lines to consider before choosing
+the longest in function `fts-max-font-size-fit-lines'."
+  :type 'integer
+  :group 'fit-text-scale )
 ;; customizables:2 ends here
 
 ;; text scale wrapper
@@ -148,6 +142,10 @@
 ;; text scale wrapper:1 ends here
 
 ;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:2]]
+(require 'face-remap)  ; text-scale- functions
+;; text scale wrapper:2 ends here
+
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:3]]
 (defun fts--increase ()
   (text-scale-increase 1)
   (when fts-graphic-suger
@@ -157,7 +155,7 @@
   (text-scale-decrease 1)
   (when fts-graphic-suger
     (sit-for fts-hesitation)))
-;; text scale wrapper:2 ends here
+;; text scale wrapper:3 ends here
 
 ;; measurement
 ;; :PROPERTIES:
@@ -169,29 +167,10 @@
 
 ;; measurement
 
-(require 'face-remap) ; text-scale- functions
-
 (defun fts--line-length ()
   "Calculate line width containing point in chars."
   (- (save-excursion (end-of-visible-line) (point))
      (save-excursion (beginning-of-line) (point))))
-
-(defun fts--line-width-in-pixel ()
-  "Calculate line width containing point in pixel."
-  (save-excursion
-    (let* ((start (save-excursion (beginning-of-visual-line) (point)))
-           (end (save-excursion (end-of-visual-line) (point))))
-      (beginning-of-visual-line)
-      (if (and (posn-at-point start) (posn-at-point end))
-          (- (car (posn-x-y (posn-at-point end)))
-             (car (posn-x-y (posn-at-point start))))
-        (1+ (fts--window-width-in-pixel))))))
-
-(defun fts--window-width-in-pixel ()
-  "Return window width in pixel."
-  (let* ((window-inside-pixel-edges (window-inside-pixel-edges)))
-    (- (nth 2 window-inside-pixel-edges)
-       (nth 0 window-inside-pixel-edges))))
 
 (defun fts--buffer-height-fits-in-window-p ()
   (save-excursion
@@ -205,98 +184,41 @@
 ;; :ID:       1b3fd6e6-bf2b-4897-8f18-b732f6753cf8
 ;; :END:
 
-;; the longest line length is essential to fit a part horizontally into a
-;; given window.
+;; Finding the longest line is essential to fit a part horizontally into
+;; a given window.
 
 
 ;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*find longest line][find longest line:1]]
 
 ;; find longest line
 
-(defvar fts-consider-max-number-lines 42)
-
 ;;;###autoload
-(defun fts-goto-visible-line-of-max-length ()
-  "Set point into longest visible line.
-Take at most `fts-consider-max-number-lines' lines into account."
-  (interactive)
-  (fts-with-truncated-lines
-   (let* ((max-line-number
-           (min (save-excursion (move-to-window-line -1))
-                fts-consider-max-number-lines))
-          (n 0)
-          (index-of-max-line-length 0)
-          (max-length (save-excursion
-                        (move-to-window-line n)
-                        (fts--line-width-in-pixel))))
-     (while (< n max-line-number)
-       (incf n)
-       (move-to-window-line n)
-       (let ((hl-line-mode t)) (hl-line-highlight))
-       (sit-for 0) ; get visual progress indicator.
-       (let ((length-candidate  (save-excursion
-                        (move-to-window-line n)
-                        (fts--line-width-in-pixel))))
-         (when (< max-length length-candidate)
-           (setq max-length length-candidate)
-           (setq index-of-max-line-length n)))
-       (let ((hl-line-mode t)) (hl-line-highlight)))
-     (move-to-window-line index-of-max-line-length)
-     (let ((hl-line-mode nil)) (hl-line-highlight)))))
-
 (defun fts-goto-visible-line-of-max-length-down ()
   "Set point into longest visible line looking downwards.
 Take at most `fts-consider-max-number-lines' lines into account."
   (interactive)
-  (fts-with-truncated-lines
-   (let* ((point-in-bottom-window-line
-           (save-excursion (move-to-window-line -1) (point)))
-          (n 0)
-          (max-length (fts--line-length))
-          (target (point)))
-     (while (and (< n fts-consider-max-number-lines)
-                 (<= (point) point-in-bottom-window-line)
-                 (not (eobp)))
-       (let ((length-candidate (fts--line-length)))
-         (when (< max-length length-candidate)
-           (setq max-length length-candidate)
-           (setq target (point))))
-       (forward-line)
-       (incf n))
-     (goto-char target))))
+  (let* ((point-in-bottom-window-line
+          (save-excursion (move-to-window-line -1) (point)))
+         (n 0)
+         (max-length (fts--line-length))
+         (target (point)))
+    (while (and (< n fts-consider-max-number-lines)
+                (<= (point) point-in-bottom-window-line)
+                (not (eobp)))
+      (let ((length-candidate (fts--line-length)))
+        (when (< max-length length-candidate)
+          (setq max-length length-candidate)
+          (setq target (point))))
+      (forward-line)
+      (incf n))
+    (goto-char target)))
 ;; find longest line:1 ends here
 
-;; fit in window
-;; :PROPERTIES:
-;; :ID:       9df260fe-b9dc-4444-8fab-56ea1cb9ebd5
-;; :END:
+;; fit in window horizontally
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*fit in window][fit in window:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*fit in window horizontally][fit in window horizontally:1]]
 
-;; fit in window
-;;;###autoload
-(defun fts-max-font-size-fit-buffer ()
-  "Use the maximal text scale to fit the buffer in the window.
-When at minimal text scale stay there and inform."
-  (interactive)
-  (save-excursion
-    (while (and (fts--buffer-height-fits-in-window-p)
-                (< (or text-scale-mode-amount 0)
-                   (text-scale-max-amount)))
-      (fts--increase))
-    (while (and
-            (not (fts--buffer-height-fits-in-window-p))
-            (< (1+ (text-scale-min-amount))
-               (or text-scale-mode-amount 0)))
-      (fts--decrease))
-    (when (= (floor (text-scale-max-amount))
-             (or text-scale-mode-amount 0))
-      (message "At maximal text scale."))
-    (when (= (floor (text-scale-min-amount))
-             (or text-scale-mode-amount 0))
-      (message "At minimal text scale."))))
-
 ;;;###autoload
 (defun fts-max-font-size-fit-line ()
   "Use the maximal text scale to fit the line in the window."
@@ -324,7 +246,35 @@ then the next call might."
   (save-excursion
     (fts-goto-visible-line-of-max-length-down)
     (fts-max-font-size-fit-line)))
-;; fit in window:1 ends here
+;; fit in window horizontally:1 ends here
+
+;; fit in window vertically
+
+
+;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*fit in window vertically][fit in window vertically:1]]
+
+;;;###autoload
+(defun fts-max-font-size-fit-buffer ()
+  "Use the maximal text scale to fit the buffer in the window.
+When at minimal text scale stay there and inform."
+  (interactive)
+  (save-excursion
+    (while (and (fts--buffer-height-fits-in-window-p)
+                (< (or text-scale-mode-amount 0)
+                   (text-scale-max-amount)))
+      (fts--increase))
+    (while (and
+            (not (fts--buffer-height-fits-in-window-p))
+            (< (1+ (text-scale-min-amount))
+               (or text-scale-mode-amount 0)))
+      (fts--decrease))
+    (when (= (floor (text-scale-max-amount))
+             (or text-scale-mode-amount 0))
+      (message "At maximal text scale."))
+    (when (= (floor (text-scale-min-amount))
+             (or text-scale-mode-amount 0))
+      (message "At minimal text scale."))))
+;; fit in window vertically:1 ends here
 
 ;; epilogue
 ;; :PROPERTIES:

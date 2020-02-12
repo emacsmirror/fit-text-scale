@@ -2,10 +2,22 @@
 
 * fit-text-scale
 
+** Why
+
+#+name: documentation-why
+#+begin_src text
+You are too lazy to do the C-x C-+ + + +... - - - - ... + + - dance
+all the time to see the FULL line in maximal font size?
+
+You want a keystroke to see the whole buffer at once by changing the
+font size?
+#+end_src
+
 ** What
 
 #+name: documentation-what
 #+begin_src text
+
 ~fit-text-scale~ is an automation to set the scale so that the text
 uses the maximal space to fit in the window.
 
@@ -32,22 +44,23 @@ Use
 - ~M-x fts-max-font-size-fit-buffer~
   - Choose about maximal text scale so that the buffer content still
     fits in current window.
+- ~C-x C-0~ (Good old ~text-scale-adjust~.)
+  - Switch back to the default size when control about the sizes has
+    been lost.
+- ~C-x C-+~ + - and ~C-x C--~ - + for fine tuning..
+- ~C-g C-g C-g~... (hit the keyboard hard!) if something, hrm, hangs.
 #+end_src
-
-There are cases when the automatism fails.  Use ~C-g~ to break the
-automatism.  Use the classical text-scale functions to increase and
-decrease the scale.  Try keys ~C-x C-+~ and ~C-x C--~.
 
 *** Keybindings
 :PROPERTIES:
 :ID:       ddba5bdd-1c7b-44ed-bd6a-e249e5426de4
 :END:
 
+#+name: documentation-keybindings
+#+begin_src org
 Proposed keybindings are
 
-#+begin_src emacs-lisp :tangle no
-
-; key bindings
+,#+begin_src emacs-lisp
 (global-set-key
  (kbd "C-x C-&")
  (lambda (&optional arg)
@@ -60,18 +73,17 @@ Proposed keybindings are
 
 (global-set-key
  (kbd "C-x C-*")
- (lambda (&optional arg)
-   (interactive "P")
-   (fts-max-font-size-fit-buffer)))
-#+end_src
+   #'fts-max-font-size-fit-buffer)
+,#+end_src
 
-With these settings
+With these settings there is
 
-- C-x C-& binds to ~fts-max-font-size-fit-line~.
-- C-u C-x C-& binds to ~fts-max-font-size-fit-lines~.
-- C-x C-* binds to ~fts-max-font-size-fit-buffer~.
+- C-x C-& :: to see the line with maximal font size.
+- C-u C-x C-& :: to use a heuristic to choose the font, i.e. consider further lines below.
+- C-x C-* :: to adjust the font size to see the whole buffer.
 
 Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x C-0 }.
+#+end_src
 
 ** licence
 :PROPERTIES:
@@ -82,7 +94,7 @@ GPL 3
 
 #+name: license
 #+begin_src text :tangle LICENSE
-Copyright (C) 2017-2019 Marco Wahl
+Copyright (C) 2017-2020 Marco Wahl
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -134,9 +146,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
+;; <<documentation-why>>
+
 ;; <<documentation-what>>
 
 ;; <<documentation-usage>>
+
+;; <<documentation-keybindings>>
 
 ;;; Code:
 #+end_src

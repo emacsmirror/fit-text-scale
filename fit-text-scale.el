@@ -5,9 +5,9 @@
 ;; Author: <marcowahlsoft@gmail.com>
 ;; Keywords: convenience
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*prologue][prologue:2]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*prologue][prologue:2]]
 
-;; Copyright (C) 2017-2019 Marco Wahl
+;; Copyright (C) 2017-2020 Marco Wahl
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,6 +24,13 @@
 
 ;;; Commentary:
 
+;; You are too lazy to do the C-x C-+ + + +... - - - - ... + + - dance
+;; all the time to see the FULL line in maximal font size?
+;; 
+;; You want a keystroke to see the whole buffer at once by changing the
+;; font size?
+
+;; 
 ;; ~fit-text-scale~ is an automation to set the scale so that the text
 ;; uses the maximal space to fit in the window.
 ;; 
@@ -45,6 +52,38 @@
 ;; - ~M-x fts-max-font-size-fit-buffer~
 ;;   - Choose about maximal text scale so that the buffer content still
 ;;     fits in current window.
+;; - ~C-x C-0~ (Good old ~text-scale-adjust~.)
+;;   - Switch back to the default size when control about the sizes has
+;;     been lost.
+;; - ~C-x C-+~ + - and ~C-x C--~ - + for fine tuning..
+;; - ~C-g C-g C-g~... (hit the keyboard hard!) if something, hrm, hangs.
+
+;; Proposed keybindings are
+;; 
+;; #+begin_src emacs-lisp
+;; (global-set-key
+;;  (kbd "C-x C-&")
+;;  (lambda (&optional arg)
+;;    (interactive "P")
+;;    (apply
+;;     (if arg
+;;         #'fts-max-font-size-fit-lines
+;;       #'fts-max-font-size-fit-line)
+;;     nil)))
+;; 
+;; (global-set-key
+;;  (kbd "C-x C-*")
+;;    #'fts-max-font-size-fit-buffer)
+;; #+end_src
+;; 
+;; With these settings there is
+;; 
+;; - C-x C-& :: to see the line with maximal font size.
+;; - C-u C-x C-& :: to use a heuristic to choose the font.  It considers
+;;   additionally some lines below.
+;; - C-x C-* :: to attempt to see the whole buffer.
+;; 
+;; Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x C-0 }.
 
 ;;; Code:
 ;; prologue:2 ends here
@@ -55,7 +94,7 @@
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*truncated lines environment][truncated lines environment:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*truncated lines environment][truncated lines environment:1]]
 
 (defmacro fts-with-truncated-lines (&rest body)
   (let ((truncate-lines-before (gensym)))
@@ -75,22 +114,22 @@
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*text scale wrapper][text scale wrapper:1]]
 
 ;; text scale wrapper
 ;; text scale wrapper:1 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:2]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*text scale wrapper][text scale wrapper:2]]
 (defvar fts-hesitation 0)
 ;; text scale wrapper:2 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:3]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*text scale wrapper][text scale wrapper:3]]
 (defun fts--increase ()
   (text-scale-increase 1)
   (sit-for fts-hesitation))
 ;; text scale wrapper:3 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:4]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*text scale wrapper][text scale wrapper:4]]
 (defun fts--decrease ()
   (text-scale-decrease 1)
   (sit-for fts-hesitation))
@@ -102,7 +141,7 @@
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*measurement][measurement:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*measurement][measurement:1]]
 
 ;; measurement
 
@@ -141,7 +180,7 @@
 ;; given window.
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*find longest line][find longest line:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*find longest line][find longest line:1]]
 
 ;; find longest line
 
@@ -204,7 +243,7 @@ Take at most `fts-consider-max-number-lines' lines into account."
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*fit in window][fit in window:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*fit in window][fit in window:1]]
 
 ;; fit in window
 ;;;###autoload
@@ -272,7 +311,7 @@ then the next call might."
 ;; :END:
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*epilogue][epilogue:1]]
+;; [[file:~/p/elisp/mw/fit-text-scale/readme.org::*epilogue][epilogue:1]]
 
 (provide 'fit-text-scale)
 

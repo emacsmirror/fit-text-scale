@@ -79,9 +79,8 @@ Proposed keybindings are
 With these settings there is
 
 - C-x C-& :: to see the line with maximal font size.
-- C-u C-x C-& :: to use a heuristic to choose the font.  It considers
-  additionally some lines below.
-- C-x C-* :: to attempt to see the whole buffer.
+- C-u C-x C-& :: to use a heuristic to choose the font, i.e. consider further lines below.
+- C-x C-* :: to adjust the font size to see the whole buffer.
 
 Also recall the bindings for text scale { C-x C-+ } { C-x C-- } { C-x C-0 }.
 #+end_src

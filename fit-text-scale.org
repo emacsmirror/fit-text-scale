@@ -178,6 +178,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           (toggle-truncate-lines))))))
 #+end_src
 
+** customizables
+
+#+begin_src emacs-lisp
+
+;; customizables
+#+end_src
+
+#+begin_src emacs-lisp
+(defcustom fts-hesitation 0.01
+  "Duration to wait til next text scale change.  Smallest sane value is 0 which should result in the fastest animation.  Only effective when `fts-graphic-suger' is on."
+  :type 'number
+  :group 'fit-text-scale)
+
+(defcustom fts-graphic-suger t
+  "Animate the zoom.  `fts-hesitationOnly' controls the animation speed."
+  :type 'boolean
+  :group 'fit-text-scale)
+
+(defcustom fts-max-amount 23
+  "Maximum achievable text scale with this program."
+  :type 'number
+  :group 'fit-text-scale)
+
+(defcustom fts-min-amount -12
+  "Minimum achievable text scale with this program."
+  :type 'number
+  :group 'fit-text-scale)
+#+end_src
+
 ** text scale wrapper
 :PROPERTIES:
 :ID:       17ed5806-2afd-4771-8495-89558378e2d5

@@ -36,13 +36,13 @@
 
 ;; Use
 ;; 
-;; - ~M-x fts-max-font-size-see-lines~
+;; - ~M-x fts-max-font-size-fit-lines~
 ;;   - Choose about maximal text scale so that longest visible line still
 ;;     fits in current window.
-;; - ~M-x fts-max-font-size-see-line~
+;; - ~M-x fts-max-font-size-fit-line~
 ;;   - Choose about maximal text scale so that the *current* line still
 ;;     fits in current window.
-;; - ~M-x fts-max-font-size-see-buffer~
+;; - ~M-x fts-max-font-size-fit-buffer~
 ;;   - Choose about maximal text scale so that the buffer content still
 ;;     fits in current window.
 
@@ -208,7 +208,7 @@ Take at most `fts-consider-max-number-lines' lines into account."
 
 ;; fit in window
 ;;;###autoload
-(defun fts-max-font-size-see-buffer ()
+(defun fts-max-font-size-fit-buffer ()
   "Use the maximal text scale to fit the buffer in the window.
 When at minimal text scale stay there and inform."
   (interactive)
@@ -230,7 +230,7 @@ When at minimal text scale stay there and inform."
       (message "At minimal text scale."))))
 
 ;;;###autoload
-(defun fts-max-font-size-see-line ()
+(defun fts-max-font-size-fit-line ()
   "Use the maximal text scale to fit the line in the window.
 Pracmatic tip: if this function gives a text scale not as big as
 it could be then a further call might.
@@ -256,14 +256,14 @@ when `text-rescale-line-width-in-pixel' is fixed."
          (fts--decrease))))))
 
 ;;;###autoload
-(defun fts-max-font-size-see-lines ()
+(defun fts-max-font-size-fit-lines ()
   "Use the maximal text scale to fit the line and lines below in the window.
 If this function gives a text scale not as big as it could be
 then the next call might."
   (interactive)
   (save-excursion
     (fts-goto-visible-line-of-max-length-down)
-    (fts-max-font-size-see-line)))
+    (fts-max-font-size-fit-line)))
 ;; fit in window:1 ends here
 
 ;; epilogue

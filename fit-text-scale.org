@@ -217,20 +217,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;; text scale wrapper
 #+end_src
 
-#+begin_src emacs-lisp
-(defvar fts-hesitation 0)
-#+end_src
 
 #+begin_src emacs-lisp
 (defun fts--increase ()
   (text-scale-increase 1)
-  (sit-for fts-hesitation))
-#+end_src
+  (when fts-graphic-suger
+    (sit-for fts-hesitation)))
 
-#+begin_src emacs-lisp
 (defun fts--decrease ()
   (text-scale-decrease 1)
-  (sit-for fts-hesitation))
+  (when fts-graphic-suger
+    (sit-for fts-hesitation)))
 #+end_src
 
 ** measurement
@@ -375,9 +372,7 @@ When at minimal text scale stay there and inform."
   (text-scale-mode)
   (beginning-of-line)
   (let ((eol (progn (save-excursion (end-of-visible-line)
-                                    (point))))
-        (fts-max-amount 25)
-        (fts-min-amount -12))
+                                    (point)))))
     (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
                 eol)
             "programming logic error.  this is a bad sign.  please report the issue.")

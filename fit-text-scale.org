@@ -96,7 +96,7 @@ to your init file.
 Consider to add also the keybindings above.
 #+end_src
 
-This could get a package some day.
+fit-text-scale could get a package some day.
 
 ** Licence
 :PROPERTIES:

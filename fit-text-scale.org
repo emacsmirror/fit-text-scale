@@ -81,6 +81,13 @@ There are some parameters to fine tune the functionality.  Check it out with
 
 #+end_src
 
+** Demo GIF :ATTACH:
+:PROPERTIES:
+:ID:       1d3972f6-3160-4fce-8637-b313968d97cf
+:END:
+
+[[file:data/1d/3972f6-3160-4fce-8637-b313968d97cf/output-2020-02-14-00:41:53.gif]]
+
 ** Install
 
 #+name: documentation-install

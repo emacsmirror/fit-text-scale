@@ -114,14 +114,16 @@
 (defcustom fts-hesitation 0.01
   "Duration to wait til next text scale change.
 Smallest sane value is 0 which should result in the fastest
-animation.  Only effective when `fts-graphic-suger' is on."
+animation.  Only effective when `fts-graphic-sugar' is on."
   :type 'number
   :group 'fit-text-scale)
 
-(defcustom fts-graphic-suger t
+(defcustom fts-graphic-sugar t
   "Animate the zoom.  `fts-hesitation' controls the animation speed."
   :type 'boolean
   :group 'fit-text-scale)
+
+(define-obsolete-variable-alias 'fts-graphic-suger 'fts-graphic-sugar "2020-02-13")
 
 (defcustom fts-max-amount 23
   "Maximum achievable text scale with this program."
@@ -158,12 +160,12 @@ the longest in function `fts-max-font-size-fit-lines'."
 ;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:3]]
 (defun fts--increase ()
   (text-scale-increase 1)
-  (when fts-graphic-suger
+  (when fts-graphic-sugar
     (sit-for fts-hesitation)))
 
 (defun fts--decrease ()
   (text-scale-decrease 1)
-  (when fts-graphic-suger
+  (when fts-graphic-sugar
     (sit-for fts-hesitation)))
 ;; text scale wrapper:3 ends here
 

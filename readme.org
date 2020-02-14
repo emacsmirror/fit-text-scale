@@ -217,12 +217,12 @@ animation.  Only effective when `fts-graphic-sugar' is on."
   :type 'number
   :group 'fit-text-scale)
 
+(define-obsolete-variable-alias 'fts-graphic-suger 'fts-graphic-sugar "2020-02-13")
+
 (defcustom fts-graphic-sugar t
   "Animate the zoom.  `fts-hesitation' controls the animation speed."
   :type 'boolean
   :group 'fit-text-scale)
-
-(define-obsolete-variable-alias 'fts-graphic-suger 'fts-graphic-sugar "2020-02-13")
 
 (defcustom fts-max-amount 23
   "Maximum achievable text scale with this program."

@@ -278,7 +278,7 @@ the longest in function `fts-max-font-size-fit-lines'."
 
 (defun fts--line-length ()
   "Calculate line width containing point in chars."
-  (- (save-excursion (end-of-visible-line) (point))
+  (- (save-excursion (end-of-line) (point))
      (save-excursion (beginning-of-line) (point))))
 
 (defun fts--buffer-height-fits-in-window-p ()

@@ -181,7 +181,7 @@ the longest in function `fts-max-font-size-fit-lines'."
 
 (defun fts--line-length ()
   "Calculate line width containing point in chars."
-  (- (save-excursion (end-of-visible-line) (point))
+  (- (save-excursion (end-of-line) (point))
      (save-excursion (beginning-of-line) (point))))
 
 (defun fts--buffer-height-fits-in-window-p ()
@@ -215,13 +215,13 @@ Take at most `fts-consider-max-number-lines' lines into account."
          (max-length (fts--line-length))
          (target (point)))
     (while (and (< n fts-consider-max-number-lines)
-                (<= (point) point-in-bottom-window-line)
+                (< (point) point-in-bottom-window-line)
                 (not (eobp)))
       (let ((length-candidate (fts--line-length)))
         (when (< max-length length-candidate)
           (setq max-length length-candidate)
           (setq target (point))))
-      (forward-line)
+      (forward-visible-line 1)
       (incf n))
     (goto-char target)))
 ;; find longest line:1 ends here

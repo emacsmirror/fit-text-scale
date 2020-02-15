@@ -251,11 +251,12 @@ Take at most `fts-consider-max-number-lines' lines into account."
 
 ;;;###autoload
 (defun fts-max-font-size-fit-lines ()
-  "Use the maximal text scale to fit the line and lines below in the window.
-If this function gives a text scale not as big as it could be
-then the next call might."
+  "Use the maximal text scale to fit the lines in the window.
+Actually only the first `fts-consider-max-number-lines' are
+considered."
   (interactive)
   (save-excursion
+    (move-to-window-line 0)
     (fts-goto-visible-line-of-max-length-down)
     (fts-max-font-size-fit-line)))
 ;; fit in window horizontally:1 ends here

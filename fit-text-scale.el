@@ -150,8 +150,7 @@ ARG stands for the amount.  1 is increase the smallest possible.
 
 (defun fit-text-scale--line-length ()
   "Calculate line width containing point in chars."
-  (- (save-excursion (end-of-line) (point))
-     (save-excursion (beginning-of-line) (point))))
+  (save-excursion (end-of-line) (current-column)))
 
 (defun fit-text-scale--buffer-height-fits-in-window-p ()
   "Return if buffer fits completely into the window."
@@ -168,21 +167,22 @@ ARG stands for the amount.  1 is increase the smallest possible.
   "Set point into longest visible line looking downwards.
 Take at most `fit-text-scale-consider-max-number-lines' lines into account."
   (interactive)
-  (let* ((point-in-bottom-window-line
-          (save-excursion (move-to-window-line -1) (point)))
-         (n 0)
-         (max-length (fit-text-scale--line-length))
-         (target (point)))
-    (while (and (< n fit-text-scale-consider-max-number-lines)
-                (< (point) point-in-bottom-window-line)
-                (not (eobp)))
-      (let ((length-candidate (fit-text-scale--line-length)))
-        (when (< max-length length-candidate)
-          (setq max-length length-candidate)
-          (setq target (point))))
-      (forward-visible-line 1)
-      (incf n))
-    (goto-char target)))
+  (let (truncate-lines)
+    (let* ((point-in-bottom-window-line
+            (save-excursion (move-to-window-line -1) (point)))
+           (n 0)
+           (max-length (fit-text-scale--line-length))
+           (target (point)))
+      (while (and (< n fit-text-scale-consider-max-number-lines)
+                  (< (point) point-in-bottom-window-line)
+                  (not (eobp)))
+        (let ((length-candidate (fit-text-scale--line-length)))
+          (when (< max-length length-candidate)
+            (setq max-length length-candidate)
+            (setq target (point))))
+        (forward-visible-line 1)
+        (incf n))
+      (goto-char target))))
 
 
 ;;;###autoload

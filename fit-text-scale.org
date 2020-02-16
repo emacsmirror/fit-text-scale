@@ -152,10 +152,43 @@ Keywords: convenience
 URL: https://gitlab.com/marcowahl/fit-text-scale
 #+end_src
 
+** Changelog
+
+***  [2020-02-16 Sun] 1.1.0 prepare for MELPA proposition
+
+- [X] bytecompile.
+- [X] checkdoc.
+- [ ] package-lint.
+
+** Development
+
+*** El Development vs. el Release
+
+Recall the opportunity to use the property line
+
+#+begin_src text
+:header-args:emacs-lisp+: :comments both
+#+end_src
+
+instead of
+
+#+begin_src text
+:header-args:emacs-lisp+: :comments no
+#+end_src
+
+to create tangle-info for detangling.
+
+The additional info can be used with function org-babel-detangle.
+Detangle means to edit the tangled file and bring these changes to the
+literate source file.
+
+These header arguments are not used to produce lisp-butt-mode.el
+releases due to the wish from the melpa side.
+
 * code
 :PROPERTIES:
 :ID:       5413952e-3e5b-4d3f-b48f-c9d5655c187b
-:header-args: :tangle fit-text-scale.el :comments both
+:header-args: :tangle fit-text-scale.el
 :END:
 
 ** meta

@@ -7,7 +7,7 @@
 ;; Author: Marco Wahl <marcowahlsoft@gmail.com>
 ;; Maintainer: Marco Wahl <marcowahlsoft@gmail.com>
 ;; Created: 2017
-;; Version: 1.1.0
+;; Version: 1.1.1
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: convenience
 ;; URL: https://gitlab.com/marcowahl/fit-text-scale

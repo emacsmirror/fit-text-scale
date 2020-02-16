@@ -134,7 +134,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #+name: fit-text-scale-version
 #+begin_src text
-1.1.0
+1.1.1
 #+end_src
 
 ** Typical Metadata
@@ -154,7 +154,12 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 
 ** Changelog
 
-***  [2020-02-16 Sun] 1.1.0 prepare for MELPA proposition
+*** [2020-02-16 Sun] 1.1.1 take care of invisible text
+
+invisible text should not add to line length.  invisible text occurs
+e.g. with Org links
+
+*** [2020-02-16 Sun] 1.1.0 prepare for MELPA proposition
 
 - [X] bytecompile.
 - [X] checkdoc.

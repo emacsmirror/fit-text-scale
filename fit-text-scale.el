@@ -1,19 +1,18 @@
-;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t ; eval: (view-mode 1) -*-
+;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t -*-
 
 ;; THIS FILE HAS BEEN GENERATED.
 
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*prologue][prologue:2]]
 
-;; Copyright (C) 2017-2020 Marco Wahl
-;; 
 ;; Author: Marco Wahl <marcowahlsoft@gmail.com>
 ;; Maintainer: Marco Wahl <marcowahlsoft@gmail.com>
 ;; Created: 2017
-;; Version: 1.0.0
-;; Package-Requires: ((emacs "25"))
+;; Version: 1.1.0
+;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: convenience
 ;; URL: https://gitlab.com/marcowahl/fit-text-scale
+
+;; Copyright (C) 2017-2020 Marco Wahl
 ;; 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -41,7 +40,7 @@
 ;; ~fit-text-scale~ is an automation to set the scale so that the text
 ;; uses the maximal space to fit in the window.
 ;; 
-;; Scale is the scale of the font.
+;; Scale stands for the zoom of the font.
 ;; 
 ;; There are three functions:
 ;; - Choose the maximal text scale to still see the full line.
@@ -58,20 +57,20 @@
 ;;    (interactive "P")
 ;;    (apply
 ;;     (if arg
-;;         #'fts-max-font-size-fit-line
-;;       #'fts-max-font-size-fit-lines)
+;;         #'fit-text-scale-max-font-size-fit-line
+;;       #'fit-text-scale-max-font-size-fit-lines)
 ;;     nil)))
 ;; 
 ;; (global-set-key
 ;;  (kbd "C-x C-*")
-;;    #'fts-max-font-size-fit-buffer)
+;;    #'fit-text-scale-max-font-size-fit-buffer)
 ;; #+end_src
 ;; 
 ;; With these settings there is
 ;; 
 ;; - ~C-x C-&~
-;;   - Choose maximal text scale so that the longest line
-;;     below still fits in current window.
+;;   - Choose maximal text scale so that the longest line visible still
+;;     fits in current window.
 ;; - ~C-u C-x C-&~
 ;;   - Choose maximal text scale so that the *current* line still
 ;;     fits in the window.
@@ -100,139 +99,94 @@
 ;; Consider to add also the keybindings above.
 
 ;;; Code:
-;; prologue:2 ends here
 
-;; customizables
-
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*customizables][customizables:1]]
 
 ;; customizables
-;; customizables:1 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*customizables][customizables:2]]
-(defcustom fts-hesitation 0.01
+(defcustom fit-text-scale-hesitation 0.01
   "Duration to wait til next text scale change.
 Smallest sane value is 0 which should result in the fastest
-animation.  Only effective when `fts-graphic-sugar' is on."
+animation.  Only effective when `fit-text-scale-graphic-sugar' is on."
   :type 'number
   :group 'fit-text-scale)
 
-(define-obsolete-variable-alias 'fts-graphic-suger 'fts-graphic-sugar "2020-02-13")
+(define-obsolete-variable-alias 'fit-text-scale-graphic-suger 'fit-text-scale-graphic-sugar "2020-02-13")
 
-(defcustom fts-graphic-sugar t
-  "Animate the zoom.  `fts-hesitation' controls the animation speed."
+(defcustom fit-text-scale-graphic-sugar t
+  "Animate the zoom.  `fit-text-scale-hesitation' controls the animation speed."
   :type 'boolean
   :group 'fit-text-scale)
 
-(defcustom fts-max-amount 23
+(defcustom fit-text-scale-max-amount 23
   "Maximum achievable text scale with this program."
   :type 'number
   :group 'fit-text-scale)
 
-(defcustom fts-min-amount -12
+(defcustom fit-text-scale-min-amount -12
   "Minimum achievable text scale with this program."
   :type 'number
   :group 'fit-text-scale)
 
-(defcustom fts-consider-max-number-lines 42
-"Maximum number of lines to consider before choosing
-the longest in function `fts-max-font-size-fit-lines'."
+(defcustom fit-text-scale-consider-max-number-lines 42
+"Maximum number of lines to consider to choose the longest."
   :type 'integer
   :group 'fit-text-scale )
-;; customizables:2 ends here
 
-;; text scale wrapper
-;; :PROPERTIES:
-;; :ID:       17ed5806-2afd-4771-8495-89558378e2d5
-;; :END:
-
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:1]]
 
 ;; text scale wrapper
-;; text scale wrapper:1 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:2]]
 (require 'face-remap)  ; text-scale- functions
-;; text scale wrapper:2 ends here
 
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*text scale wrapper][text scale wrapper:3]]
-(defun fts--increase ()
-  (text-scale-increase 1)
-  (when fts-graphic-sugar
-    (sit-for fts-hesitation)))
+(defun fit-text-scale--increase (arg)
+  "Increase text scale.  Possibly redisplay.
+ARG stands for the amount.  1 is increase the smallest possible.
+-1 is decrease."
+  (text-scale-increase arg)
+  (when fit-text-scale-graphic-sugar
+    (sit-for fit-text-scale-hesitation)))
 
-(defun fts--decrease ()
-  (text-scale-decrease 1)
-  (when fts-graphic-sugar
-    (sit-for fts-hesitation)))
-;; text scale wrapper:3 ends here
-
-;; measurement
-;; :PROPERTIES:
-;; :ID:       6f4c44ee-0f77-40d5-9ba2-d1d384fcc9ca
-;; :END:
-
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*measurement][measurement:1]]
 
 ;; measurement
 
-(defun fts--line-length ()
+(defun fit-text-scale--line-length ()
   "Calculate line width containing point in chars."
   (- (save-excursion (end-of-line) (point))
      (save-excursion (beginning-of-line) (point))))
 
-(defun fts--buffer-height-fits-in-window-p ()
+(defun fit-text-scale--buffer-height-fits-in-window-p ()
+  "Return if buffer fits completely into the window."
   (save-excursion
     (goto-char (point-min))
     (sit-for 0)
     (posn-at-point (point-max))))
-;; measurement:1 ends here
 
-;; find longest line
-;; :PROPERTIES:
-;; :ID:       1b3fd6e6-bf2b-4897-8f18-b732f6753cf8
-;; :END:
-
-;; Finding the longest line is essential to fit a part horizontally into
-;; a given window.
-
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*find longest line][find longest line:1]]
 
 ;; find longest line
 
 ;;;###autoload
-(defun fts-goto-visible-line-of-max-length-down ()
+(defun fit-text-scale-goto-visible-line-of-max-length-down ()
   "Set point into longest visible line looking downwards.
-Take at most `fts-consider-max-number-lines' lines into account."
+Take at most `fit-text-scale-consider-max-number-lines' lines into account."
   (interactive)
   (let* ((point-in-bottom-window-line
           (save-excursion (move-to-window-line -1) (point)))
          (n 0)
-         (max-length (fts--line-length))
+         (max-length (fit-text-scale--line-length))
          (target (point)))
-    (while (and (< n fts-consider-max-number-lines)
+    (while (and (< n fit-text-scale-consider-max-number-lines)
                 (< (point) point-in-bottom-window-line)
                 (not (eobp)))
-      (let ((length-candidate (fts--line-length)))
+      (let ((length-candidate (fit-text-scale--line-length)))
         (when (< max-length length-candidate)
           (setq max-length length-candidate)
           (setq target (point))))
       (forward-visible-line 1)
       (incf n))
     (goto-char target)))
-;; find longest line:1 ends here
 
-;; fit in window horizontally
-
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*fit in window horizontally][fit in window horizontally:1]]
 
 ;;;###autoload
-(defun fts-max-font-size-fit-line ()
+(defun fit-text-scale-max-font-size-fit-line ()
   "Use the maximal text scale to fit the line in the window."
   (interactive)
   (text-scale-mode)
@@ -242,63 +196,49 @@ Take at most `fts-consider-max-number-lines' lines into account."
     (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
                 eol)
             "programming logic error.  this is a bad sign.  please report the issue.")
-    (while (and (< text-scale-mode-amount fts-max-amount)
+    (while (and (< text-scale-mode-amount fit-text-scale-max-amount)
                 (= (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (fts--increase))
-    (while  (and (< fts-min-amount text-scale-mode-amount)
+      (fit-text-scale--increase 1))
+    (while  (and (< fit-text-scale-min-amount text-scale-mode-amount)
                  (< (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (fts--decrease))))
+      (fit-text-scale--increase -1))))
 
 ;;;###autoload
-(defun fts-max-font-size-fit-lines ()
+(defun fit-text-scale-max-font-size-fit-lines ()
   "Use the maximal text scale to fit the lines in the window.
-Actually only the first `fts-consider-max-number-lines' are
+Actually only the first `fit-text-scale-consider-max-number-lines' are
 considered."
   (interactive)
   (save-excursion
     (move-to-window-line 0)
-    (fts-goto-visible-line-of-max-length-down)
-    (fts-max-font-size-fit-line)))
-;; fit in window horizontally:1 ends here
+    (fit-text-scale-goto-visible-line-of-max-length-down)
+    (fit-text-scale-max-font-size-fit-line)))
 
-;; fit in window vertically
-
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*fit in window vertically][fit in window vertically:1]]
 
 ;;;###autoload
-(defun fts-max-font-size-fit-buffer ()
+(defun fit-text-scale-max-font-size-fit-buffer ()
   "Use the maximal text scale to fit the buffer in the window.
 When at minimal text scale stay there and inform."
   (interactive)
   (save-excursion
-    (while (and (fts--buffer-height-fits-in-window-p)
+    (while (and (fit-text-scale--buffer-height-fits-in-window-p)
                 (< (or text-scale-mode-amount 0)
                    (text-scale-max-amount)))
-      (fts--increase))
+      (fit-text-scale--increase 1))
     (while (and
-            (not (fts--buffer-height-fits-in-window-p))
+            (not (fit-text-scale--buffer-height-fits-in-window-p))
             (< (1+ (text-scale-min-amount))
                (or text-scale-mode-amount 0)))
-      (fts--decrease))
+      (fit-text-scale--increase -1))
     (when (= (floor (text-scale-max-amount))
              (or text-scale-mode-amount 0))
       (message "At maximal text scale."))
     (when (= (floor (text-scale-min-amount))
              (or text-scale-mode-amount 0))
       (message "At minimal text scale."))))
-;; fit in window vertically:1 ends here
 
-;; epilogue
-;; :PROPERTIES:
-;; :ID:       1ee365eb-e9ce-4ac3-ac14-1b2361d55ed8
-;; :END:
-
-
-;; [[file:~/p/elisp/mw/fit-text-scale/fit-text-scale.org::*epilogue][epilogue:1]]
 
 (provide 'fit-text-scale)
 
 
 ;;; fit-text-scale.el ends here
-;; epilogue:1 ends here

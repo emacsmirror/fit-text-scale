@@ -29,7 +29,7 @@ font size?
 ~fit-text-scale~ is an automation to set the scale so that the text
 uses the maximal space to fit in the window.
 
-Scale is the scale of the font.
+Scale stands for the zoom of the font.
 
 There are three functions:
 - Choose the maximal text scale to still see the full line.
@@ -63,8 +63,8 @@ functionality to keys.
 With these settings there is
 
 - ~C-x C-&~
-  - Choose maximal text scale so that the longest line
-    below still fits in current window.
+  - Choose maximal text scale so that the longest line visible still
+    fits in current window.
 - ~C-u C-x C-&~
   - Choose maximal text scale so that the *current* line still
     fits in the window.
@@ -235,8 +235,7 @@ animation.  Only effective when `fts-graphic-sugar' is on."
   :group 'fit-text-scale)
 
 (defcustom fts-consider-max-number-lines 42
-"Maximum number of lines to consider before choosing
-the longest in function `fts-max-font-size-fit-lines'."
+"Maximum number of lines to consider to choose the longest."
   :type 'integer
   :group 'fit-text-scale )
 #+end_src
@@ -282,6 +281,7 @@ the longest in function `fts-max-font-size-fit-lines'."
      (save-excursion (beginning-of-line) (point))))
 
 (defun fts--buffer-height-fits-in-window-p ()
+  "Return if buffer fits completely into the window."
   (save-excursion
     (goto-char (point-min))
     (sit-for 0)

@@ -255,13 +255,11 @@ animation.  Only effective when `fts-graphic-sugar' is on."
 #+end_src
 
 #+begin_src emacs-lisp
-(defun fts--increase ()
-  (text-scale-increase 1)
-  (when fts-graphic-sugar
-    (sit-for fts-hesitation)))
-
-(defun fts--decrease ()
-  (text-scale-decrease 1)
+(defun fts--increase (arg)
+  "Increase text scale.  Possibly redisplay.
+ARG stands for the amount.  1 is increase the smallest possible.
+-1 is decrease."
+  (text-scale-increase arg)
   (when fts-graphic-sugar
     (sit-for fts-hesitation)))
 #+end_src
@@ -344,10 +342,10 @@ Take at most `fts-consider-max-number-lines' lines into account."
             "programming logic error.  this is a bad sign.  please report the issue.")
     (while (and (< text-scale-mode-amount fts-max-amount)
                 (= (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (fts--increase))
+      (fts--increase 1))
     (while  (and (< fts-min-amount text-scale-mode-amount)
                  (< (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (fts--decrease))))
+      (fts--increase -1))))
 
 ;;;###autoload
 (defun fts-max-font-size-fit-lines ()
@@ -374,12 +372,12 @@ When at minimal text scale stay there and inform."
     (while (and (fts--buffer-height-fits-in-window-p)
                 (< (or text-scale-mode-amount 0)
                    (text-scale-max-amount)))
-      (fts--increase))
+      (fts--increase 1))
     (while (and
             (not (fts--buffer-height-fits-in-window-p))
             (< (1+ (text-scale-min-amount))
                (or text-scale-mode-amount 0)))
-      (fts--decrease))
+      (fts--increase -1))
     (when (= (floor (text-scale-max-amount))
              (or text-scale-mode-amount 0))
       (message "At maximal text scale."))

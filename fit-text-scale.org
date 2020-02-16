@@ -450,15 +450,29 @@ When at minimal text scale stay there and inform."
 
 ** open
 
-*** TODO investigate irritations with org-links
+*** TODO Document Process with MELPA
 
-- hidden text can be irritating for sometimes e.g. org links.
+- [2020-02-16 Sun] placed a pull
+  request.  see https://github.com/melpa/melpa/pull/6701.
+
+- [2020-02-16 Sun] some cleanup done.
 
 ** closed
+
+*** DONE investigate irritations with org-links
+
+- hidden text can be irritating sometimes e.g. with Org links.
+- using function current-column now to find out line width.  AFAICT it
+  takes care about invisible parts and yields the visible line width.
+  - the function behaves more as one expects now, I find.
 
 *** DONE fit-text-scale-max-font-size-fit-lines only consider lines down
 
 - was: starting with first visible line in the window.
+- [2020-02-16 Sun 21:22] and it's _all_ visible lines in the window
+  again.
+- :)
+- suspicion: should this better be an option?
 
 *** DONE keep license information DRY :ARCHIVE:
 CLOSED: [2018-06-28 Thu 14:34]

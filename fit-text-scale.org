@@ -147,7 +147,7 @@ Author: Marco Wahl <marcowahlsoft@gmail.com>
 Maintainer: Marco Wahl <marcowahlsoft@gmail.com>
 Created: 2017
 Version: <<fit-text-scale-version>>
-Package-Requires: ((emacs "25"))
+Package-Requires: ((emacs "25.1"))
 Keywords: convenience
 URL: https://gitlab.com/marcowahl/fit-text-scale
 #+end_src
@@ -216,6 +216,8 @@ releases due to the wish from the melpa side.
 
 #+begin_src emacs-lisp :noweb yes
 
+;; <<package-metadata>>
+
 ;; <<license>>
 
 ;;; Commentary:

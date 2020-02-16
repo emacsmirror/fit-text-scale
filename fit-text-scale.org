@@ -51,13 +51,13 @@ functionality to keys.
    (interactive "P")
    (apply
     (if arg
-        #'fts-max-font-size-fit-line
-      #'fts-max-font-size-fit-lines)
+        #'fit-text-scale-max-font-size-fit-line
+      #'fit-text-scale-max-font-size-fit-lines)
     nil)))
 
 (global-set-key
  (kbd "C-x C-*")
-   #'fts-max-font-size-fit-buffer)
+   #'fit-text-scale-max-font-size-fit-buffer)
 ,#+end_src
 
 With these settings there is
@@ -158,7 +158,7 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 
 - [X] bytecompile.
 - [X] checkdoc.
-- [ ] package-lint.
+- [X] package-lint.
 
 ** Development
 
@@ -246,31 +246,31 @@ releases due to the wish from the melpa side.
 #+end_src
 
 #+begin_src emacs-lisp
-(defcustom fts-hesitation 0.01
+(defcustom fit-text-scale-hesitation 0.01
   "Duration to wait til next text scale change.
 Smallest sane value is 0 which should result in the fastest
-animation.  Only effective when `fts-graphic-sugar' is on."
+animation.  Only effective when `fit-text-scale-graphic-sugar' is on."
   :type 'number
   :group 'fit-text-scale)
 
-(define-obsolete-variable-alias 'fts-graphic-suger 'fts-graphic-sugar "2020-02-13")
+(define-obsolete-variable-alias 'fit-text-scale-graphic-suger 'fit-text-scale-graphic-sugar "2020-02-13")
 
-(defcustom fts-graphic-sugar t
-  "Animate the zoom.  `fts-hesitation' controls the animation speed."
+(defcustom fit-text-scale-graphic-sugar t
+  "Animate the zoom.  `fit-text-scale-hesitation' controls the animation speed."
   :type 'boolean
   :group 'fit-text-scale)
 
-(defcustom fts-max-amount 23
+(defcustom fit-text-scale-max-amount 23
   "Maximum achievable text scale with this program."
   :type 'number
   :group 'fit-text-scale)
 
-(defcustom fts-min-amount -12
+(defcustom fit-text-scale-min-amount -12
   "Minimum achievable text scale with this program."
   :type 'number
   :group 'fit-text-scale)
 
-(defcustom fts-consider-max-number-lines 42
+(defcustom fit-text-scale-consider-max-number-lines 42
 "Maximum number of lines to consider to choose the longest."
   :type 'integer
   :group 'fit-text-scale )
@@ -291,13 +291,13 @@ animation.  Only effective when `fts-graphic-sugar' is on."
 #+end_src
 
 #+begin_src emacs-lisp
-(defun fts--increase (arg)
+(defun fit-text-scale--increase (arg)
   "Increase text scale.  Possibly redisplay.
 ARG stands for the amount.  1 is increase the smallest possible.
 -1 is decrease."
   (text-scale-increase arg)
-  (when fts-graphic-sugar
-    (sit-for fts-hesitation)))
+  (when fit-text-scale-graphic-sugar
+    (sit-for fit-text-scale-hesitation)))
 #+end_src
 
 ** measurement
@@ -309,12 +309,12 @@ ARG stands for the amount.  1 is increase the smallest possible.
 
 ;; measurement
 
-(defun fts--line-length ()
+(defun fit-text-scale--line-length ()
   "Calculate line width containing point in chars."
   (- (save-excursion (end-of-line) (point))
      (save-excursion (beginning-of-line) (point))))
 
-(defun fts--buffer-height-fits-in-window-p ()
+(defun fit-text-scale--buffer-height-fits-in-window-p ()
   "Return if buffer fits completely into the window."
   (save-excursion
     (goto-char (point-min))
@@ -335,19 +335,19 @@ a given window.
 ;; find longest line
 
 ;;;###autoload
-(defun fts-goto-visible-line-of-max-length-down ()
+(defun fit-text-scale-goto-visible-line-of-max-length-down ()
   "Set point into longest visible line looking downwards.
-Take at most `fts-consider-max-number-lines' lines into account."
+Take at most `fit-text-scale-consider-max-number-lines' lines into account."
   (interactive)
   (let* ((point-in-bottom-window-line
           (save-excursion (move-to-window-line -1) (point)))
          (n 0)
-         (max-length (fts--line-length))
+         (max-length (fit-text-scale--line-length))
          (target (point)))
-    (while (and (< n fts-consider-max-number-lines)
+    (while (and (< n fit-text-scale-consider-max-number-lines)
                 (< (point) point-in-bottom-window-line)
                 (not (eobp)))
-      (let ((length-candidate (fts--line-length)))
+      (let ((length-candidate (fit-text-scale--line-length)))
         (when (< max-length length-candidate)
           (setq max-length length-candidate)
           (setq target (point))))
@@ -369,7 +369,7 @@ Take at most `fts-consider-max-number-lines' lines into account."
 #+begin_src emacs-lisp
 
 ;;;###autoload
-(defun fts-max-font-size-fit-line ()
+(defun fit-text-scale-max-font-size-fit-line ()
   "Use the maximal text scale to fit the line in the window."
   (interactive)
   (text-scale-mode)
@@ -379,23 +379,23 @@ Take at most `fts-consider-max-number-lines' lines into account."
     (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
                 eol)
             "programming logic error.  this is a bad sign.  please report the issue.")
-    (while (and (< text-scale-mode-amount fts-max-amount)
+    (while (and (< text-scale-mode-amount fit-text-scale-max-amount)
                 (= (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (fts--increase 1))
-    (while  (and (< fts-min-amount text-scale-mode-amount)
+      (fit-text-scale--increase 1))
+    (while  (and (< fit-text-scale-min-amount text-scale-mode-amount)
                  (< (progn (save-excursion (end-of-visual-line) (point))) eol))
-      (fts--increase -1))))
+      (fit-text-scale--increase -1))))
 
 ;;;###autoload
-(defun fts-max-font-size-fit-lines ()
+(defun fit-text-scale-max-font-size-fit-lines ()
   "Use the maximal text scale to fit the lines in the window.
-Actually only the first `fts-consider-max-number-lines' are
+Actually only the first `fit-text-scale-consider-max-number-lines' are
 considered."
   (interactive)
   (save-excursion
     (move-to-window-line 0)
-    (fts-goto-visible-line-of-max-length-down)
-    (fts-max-font-size-fit-line)))
+    (fit-text-scale-goto-visible-line-of-max-length-down)
+    (fit-text-scale-max-font-size-fit-line)))
 #+end_src
 
 *** fit in window vertically
@@ -406,20 +406,20 @@ considered."
 #+begin_src emacs-lisp
 
 ;;;###autoload
-(defun fts-max-font-size-fit-buffer ()
+(defun fit-text-scale-max-font-size-fit-buffer ()
   "Use the maximal text scale to fit the buffer in the window.
 When at minimal text scale stay there and inform."
   (interactive)
   (save-excursion
-    (while (and (fts--buffer-height-fits-in-window-p)
+    (while (and (fit-text-scale--buffer-height-fits-in-window-p)
                 (< (or text-scale-mode-amount 0)
                    (text-scale-max-amount)))
-      (fts--increase 1))
+      (fit-text-scale--increase 1))
     (while (and
-            (not (fts--buffer-height-fits-in-window-p))
+            (not (fit-text-scale--buffer-height-fits-in-window-p))
             (< (1+ (text-scale-min-amount))
                (or text-scale-mode-amount 0)))
-      (fts--increase -1))
+      (fit-text-scale--increase -1))
     (when (= (floor (text-scale-max-amount))
              (or text-scale-mode-amount 0))
       (message "At maximal text scale."))
@@ -451,7 +451,7 @@ When at minimal text scale stay there and inform."
 
 ** closed
 
-*** DONE fts-max-font-size-fit-lines only consider lines down
+*** DONE fit-text-scale-max-font-size-fit-lines only consider lines down
 
 - was: starting with first visible line in the window.
 

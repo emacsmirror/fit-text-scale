@@ -208,7 +208,7 @@ releases due to the wish from the melpa side.
 :END:
 
 #+begin_src emacs-lisp  :tangle fit-text-scale.el :comments no :noweb yes
-;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t ; eval: (view-mode 1) -*-
+;;; fit-text-scale.el --- Fit text by scaling -*- lexical-binding: t -*-
 <<note-about-generation>>
 
 
@@ -234,6 +234,9 @@ releases due to the wish from the melpa side.
 #+end_src
 
 ** customizables
+:PROPERTIES:
+:ID:       02c8f412-d6bd-4ae8-a8b6-e41626ed3e82
+:END:
 
 #+begin_src emacs-lisp
 
@@ -357,6 +360,9 @@ Take at most `fts-consider-max-number-lines' lines into account."
 :END:
 
 *** fit in window horizontally
+:PROPERTIES:
+:ID:       60187a04-6f1c-4a16-9653-18ef3aa2e24b
+:END:
 
 #+begin_src emacs-lisp
 
@@ -391,6 +397,9 @@ considered."
 #+end_src
 
 *** fit in window vertically
+:PROPERTIES:
+:ID:       4cb93e9e-c8ce-4337-a1ba-8a24be8e532b
+:END:
 
 #+begin_src emacs-lisp
 

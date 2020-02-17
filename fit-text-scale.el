@@ -101,6 +101,10 @@
 ;;; Code:
 
 
+(require 'cl-lib) ; cl-incf
+(require 'cl-macs) ; cl-assert
+
+
 ;; customizables
 
 (defcustom fit-text-scale-hesitation 0.01
@@ -181,7 +185,7 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
             (setq max-length length-candidate)
             (setq target (point))))
         (forward-visible-line 1)
-        (incf n))
+        (cl-incf n))
       (goto-char target))))
 
 
@@ -193,7 +197,7 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
   (beginning-of-line)
   (let ((eol (progn (save-excursion (end-of-visible-line)
                                     (point)))))
-    (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
+    (cl-assert (<= (progn (save-excursion (end-of-visual-line) (point)))
                 eol)
             "programming logic error.  this is a bad sign.  please report the issue.")
     (while (and (< text-scale-mode-amount fit-text-scale-max-amount)

@@ -240,6 +240,14 @@ releases due to the wish from the melpa side.
 ;;; Code:
 #+end_src
 
+** dependencies
+
+#+begin_src emacs-lisp
+
+(require 'cl-lib) ; cl-incf
+(require 'cl-macs) ; cl-assert
+#+end_src
+
 ** customizables
 :PROPERTIES:
 :ID:       02c8f412-d6bd-4ae8-a8b6-e41626ed3e82
@@ -357,7 +365,7 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
             (setq max-length length-candidate)
             (setq target (point))))
         (forward-visible-line 1)
-        (incf n))
+        (cl-incf n))
       (goto-char target))))
 #+end_src
 
@@ -381,7 +389,7 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
   (beginning-of-line)
   (let ((eol (progn (save-excursion (end-of-visible-line)
                                     (point)))))
-    (assert (<= (progn (save-excursion (end-of-visual-line) (point)))
+    (cl-assert (<= (progn (save-excursion (end-of-visual-line) (point)))
                 eol)
             "programming logic error.  this is a bad sign.  please report the issue.")
     (while (and (< text-scale-mode-amount fit-text-scale-max-amount)
@@ -452,9 +460,11 @@ When at minimal text scale stay there and inform."
 
 *** TODO Document Process with MELPA
 
+- [2020-02-17 Mon] conao3 points out a dependency issue.
+  - => change: incf to cl-incf, assert to cl-assert.
+  - => add requires.
 - [2020-02-16 Sun] placed a pull
   request.  see https://github.com/melpa/melpa/pull/6701.
-
 - [2020-02-16 Sun] some cleanup done.
 
 ** closed

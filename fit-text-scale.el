@@ -25,7 +25,7 @@
 ;; GNU General Public License for more details.
 ;; 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -101,8 +101,7 @@
 ;;; Code:
 
 
-(require 'cl-lib) ; cl-incf
-(require 'cl-macs) ; cl-assert
+(require 'cl-lib) ; cl-incf, cl-assert
 
 
 ;; customizables

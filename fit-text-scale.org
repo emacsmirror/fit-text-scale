@@ -241,6 +241,9 @@ releases due to the wish from the melpa side.
 #+end_src
 
 ** dependencies
+:PROPERTIES:
+:ID:       37bc1ca6-2752-4d99-a560-60f6f8c3ea4c
+:END:
 
 #+begin_src emacs-lisp
 

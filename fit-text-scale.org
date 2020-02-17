@@ -113,7 +113,7 @@ fit-text-scale could get a package some day.
 GPL 3
 
 #+name: license
-#+begin_src text :tangle LICENSE :noweb yes
+#+begin_src text :tangle no
 Copyright (C) 2017-2020 Marco Wahl
 
 This program is free software; you can redistribute it and/or modify
@@ -127,7 +127,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #+end_src
 
 ** Version
@@ -244,8 +244,7 @@ releases due to the wish from the melpa side.
 
 #+begin_src emacs-lisp
 
-(require 'cl-lib) ; cl-incf
-(require 'cl-macs) ; cl-assert
+(require 'cl-lib) ; cl-incf, cl-assert
 #+end_src
 
 ** customizables

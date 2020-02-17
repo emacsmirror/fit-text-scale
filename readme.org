@@ -134,7 +134,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #+name: fit-text-scale-version
 #+begin_src text
-1.1.1
+1.1.2
 #+end_src
 
 ** Typical Metadata

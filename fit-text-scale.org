@@ -201,6 +201,88 @@ literate source file.
 These header arguments are not used to produce lisp-butt-mode.el
 releases due to the wish from the melpa side.
 
+*** cask
+
+- It's possible to use the cask from the git clone in folder bin/.
+- I added that path to PATH in my .zshrc.
+  PATH="${HOME}/p/cask/bin:${PATH}".
+
+**** Create a Cask file from scratch
+
+#+begin_src sh
+cask init --dev
+#+end_src
+
+Install the stuff referenced in the Cask file.
+
+#+begin_src sh
+cask
+#+end_src
+
+Find stuff in the .cask directory.
+
+**** Build
+
+***** byte compile
+
+#+begin_src sh
+cask build
+#+end_src
+
+***** version
+
+#+begin_src sh
+cask version
+#+end_src
+
+***** build a package
+
+#+begin_src sh
+cask package
+#+end_src
+- see dist/.
+
+** Tests
+
+*** test with ecukes
+
+**** setup
+
+Create structure for testing.  This is only needed at the very first time.
+
+#+begin_src sh
+cask exec ecukes new
+#+end_src
+
+**** location
+
+Find the tests in directory features/.
+
+**** call
+:PROPERTIES:
+:ID:       19ef8b87-3dea-4eee-bba1-cac53e213270
+:END:
+
+Call
+
+#+begin_src sh
+cask exec ecukes --win
+#+end_src
+
+***** reporters
+
+Find other reporters.
+
+#+begin_src sh
+cask exec ecukes list-reporters
+#+end_src
+
+Use like so
+
+#+begin_src sh
+cask exec ecukes --win --reporter magnars
+#+end_src
+
 * code
 :PROPERTIES:
 :ID:       5413952e-3e5b-4d3f-b48f-c9d5655c187b

@@ -152,12 +152,13 @@ Keywords: convenience
 URL: https://gitlab.com/marcowahl/fit-text-scale
 #+end_src
 
-** Changelog
+** ChangeLog
 :PROPERTIES:
 :ID:       6efd027d-a9d3-420d-bb38-54be994637ae
 :END:
 
-# file ChangeLog gets the entries.  this section mirrors the ChangeLog file.
+This section mirrors the ChangeLog file.
+
 # pick up changes: go to file ChangeLog.  do org-babel-detangle.
 #+begin_src text
 2020-02-17 Marco Wahl  <marcowahlsoft@gmail.com>
@@ -168,12 +169,12 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 
 	(1.1.1) Invisible text should not add to line length.  Invisible
 	text occurs e.g. with Org links.
-
-2020-02-16 Marco Wahl  <marcowahlsoft@gmail.com>
-
 	(1.1.0) Prepare for MELPA proposition.  Done bytecompile, checkdoc
 	package-lint.
 #+end_src
+
+Add entries to the ChangeLog file into that block.  E.g. use C-x 4 a
+and don't forget to move the entry into that block.
 
 ** Development
 

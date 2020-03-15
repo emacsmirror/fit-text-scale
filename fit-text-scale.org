@@ -92,18 +92,21 @@ There are some parameters to fine tune the functionality.  Check it out with
 
 #+name: documentation-install
 #+begin_src org :tangle no
-To install fit-text-scale add the lines (with YOUR installation path)
+~fit-text-scale~ is available on melpa.
+
+
+Or use the good old style:
+
+- Download fit-text-scale.el.
+
+- Add the lines (with YOUR path to fit-text-scale.el)
 to your init file.
 
 ,#+begin_src emacs-lisp
 (push "/PATH/TO/fit-text-scale" load-path)
 (require 'fit-text-scale)
 ,#+end_src
-
-Consider to add also the keybindings above.
 #+end_src
-
-fit-text-scale could get a package some day.
 
 ** Licence
 :PROPERTIES:
@@ -246,24 +249,12 @@ cask package
 
 *** test with ecukes
 
-**** setup
-
-Create structure for testing.  This is only needed at the very first time.
-
-#+begin_src sh
-cask exec ecukes new
-#+end_src
-
-**** location
-
-Find the tests in directory features/.
-
-**** call
+**** trigger
 :PROPERTIES:
 :ID:       19ef8b87-3dea-4eee-bba1-cac53e213270
 :END:
 
-Call
+In a shell call
 
 #+begin_src sh
 cask exec ecukes --win
@@ -282,6 +273,18 @@ Use like so
 #+begin_src sh
 cask exec ecukes --win --reporter magnars
 #+end_src
+
+**** setup
+
+Create structure for testing.  This is only needed at the very first time.
+
+#+begin_src sh
+cask exec ecukes new
+#+end_src
+
+**** location
+
+Find the tests in directory features/.
 
 * code
 :PROPERTIES:

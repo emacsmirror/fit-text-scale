@@ -88,15 +88,20 @@
 ;;     M-x customize-group fit-text-scale
 ;; 
 
-;; To install fit-text-scale add the lines (with YOUR installation path)
+;; ~fit-text-scale~ is available on melpa.
+;; 
+;; 
+;; Or use the good old style:
+;; 
+;; - Download fit-text-scale.el.
+;; 
+;; - Add the lines (with YOUR path to fit-text-scale.el)
 ;; to your init file.
 ;; 
 ;; #+begin_src emacs-lisp
 ;; (push "/PATH/TO/fit-text-scale" load-path)
 ;; (require 'fit-text-scale)
 ;; #+end_src
-;; 
-;; Consider to add also the keybindings above.
 
 ;;; Code:
 

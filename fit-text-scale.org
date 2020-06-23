@@ -517,9 +517,13 @@ Furter the values of fit-text-scale-min-amount and fit-text-scale-max-amount def
   (beginning-of-line)
   (let ((eol (progn (save-excursion (end-of-visible-line)
                                     (point)))))
-    (cl-assert (<= (progn (save-excursion (end-of-visual-line) (point)))
-                eol)
-            "programming logic error.  this is a bad sign.  please report the issue.")
+    (cl-assert
+     (<= (progn (save-excursion (end-of-visual-line) (point)))
+         eol)
+     (concat
+      "programming logic error.  "
+      "this shouldn't happen.  "
+      "please report the issue."))
     (while (and (< text-scale-mode-amount fit-text-scale-max-amount)
                 (= (progn (save-excursion (end-of-visual-line) (point))) eol))
       (fit-text-scale--increase 1))

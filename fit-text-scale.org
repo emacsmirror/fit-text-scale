@@ -181,6 +181,14 @@ and don't forget to move the entry into that block.
 
 ** Development
 
+*** Literate Program
+
+This is a literate program. This org file is the main source for the
+program. The actual emacs-lisp program is generated with the literate
+source as input.
+
+In Org mode use org-babel-tangle. {C-c C-v t}
+
 *** El Development vs. el Release
 
 Recall the opportunity to use the property line
@@ -206,7 +214,7 @@ releases due to the wish from the melpa side.
 
 *** cask
 
-- It's possible to use the cask from the git clone in folder bin/.
+- It's possible to use the cask from a git clone in its folder bin/.
 - I added that path to PATH in my .zshrc.
   PATH="${HOME}/p/cask/bin:${PATH}".
 
@@ -245,11 +253,13 @@ cask package
 #+end_src
 - see dist/.
 
-** Tests
+*** Tests
 
-*** test with ecukes
+The tests are defined outside this literate source file. See ./features.
 
-**** trigger
+**** test with ecukes
+
+***** trigger
 :PROPERTIES:
 :ID:       19ef8b87-3dea-4eee-bba1-cac53e213270
 :END:
@@ -260,7 +270,7 @@ In a shell call
 cask exec ecukes --win
 #+end_src
 
-***** reporters
+****** reporters
 
 Find other reporters.
 
@@ -274,7 +284,7 @@ Use like so
 cask exec ecukes --win --reporter magnars
 #+end_src
 
-**** setup
+***** setup
 
 Create structure for testing.  This is only needed at the very first time.
 
@@ -282,7 +292,7 @@ Create structure for testing.  This is only needed at the very first time.
 cask exec ecukes new
 #+end_src
 
-**** location
+***** location
 
 Find the tests in directory features/.
 
@@ -392,6 +402,10 @@ animation.  Only effective when `fit-text-scale-graphic-sugar' is on."
 :ID:       17ed5806-2afd-4771-8495-89558378e2d5
 :END:
 
+This section contains a wrapper function around function
+text-scale-increase. With the wrapper the user gets control to lag the
+text scaling according to the value of fit-text-scale-hesitation.
+
 #+begin_src emacs-lisp
 
 ;; text scale wrapper
@@ -416,6 +430,13 @@ ARG stands for the amount.  1 is increase the smallest possible.
 :ID:       6f4c44ee-0f77-40d5-9ba2-d1d384fcc9ca
 :END:
 
+Functions to get information about the window.
+
+*** misc
+:PROPERTIES:
+:ID:       391677a6-3041-4286-9559-c6f70d9c2454
+:END:
+
 #+begin_src emacs-lisp
 
 ;; measurement
@@ -432,7 +453,7 @@ ARG stands for the amount.  1 is increase the smallest possible.
     (posn-at-point (point-max))))
 #+end_src
 
-** find longest line
+*** find longest line
 :PROPERTIES:
 :ID:       1b3fd6e6-bf2b-4897-8f18-b732f6753cf8
 :END:
@@ -464,7 +485,7 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
             (setq target (point))))
         (forward-visible-line 1)
         (cl-incf n))
-      (goto-char target))))
+      target)))
 #+end_src
 
 ** fit in window
@@ -476,6 +497,15 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
 :PROPERTIES:
 :ID:       60187a04-6f1c-4a16-9653-18ef3aa2e24b
 :END:
+
+**** fit one line
+:PROPERTIES:
+:ID:       26b8e8ba-64a1-46ee-8fd3-13a78c1ae980
+:END:
+
+Using functions end-of-visual-line and end-of-visible-line to get positions to compare. Increase text-scale until the line fits no more. Then decrease text-scale until the line fits.
+
+Furter the values of fit-text-scale-min-amount and fit-text-scale-max-amount define limits for the min/max text-scale set by this program.
 
 #+begin_src emacs-lisp
 
@@ -496,7 +526,14 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
     (while  (and (< fit-text-scale-min-amount text-scale-mode-amount)
                  (< (progn (save-excursion (end-of-visual-line) (point))) eol))
       (fit-text-scale--increase -1))))
+#+end_src
 
+**** fit multiple lines
+:PROPERTIES:
+:ID:       570d0603-88bb-4178-a6b2-380c75ec0cac
+:END:
+
+#+begin_src emacs-lisp
 ;;;###autoload
 (defun fit-text-scale-max-font-size-fit-lines ()
   "Use the maximal text scale to fit the lines in the window.
@@ -505,7 +542,7 @@ considered."
   (interactive)
   (save-excursion
     (move-to-window-line 0)
-    (fit-text-scale-goto-visible-line-of-max-length-down)
+    (goto-char (fit-text-scale-goto-visible-line-of-max-length-down))
     (fit-text-scale-max-font-size-fit-line)))
 #+end_src
 
@@ -513,6 +550,11 @@ considered."
 :PROPERTIES:
 :ID:       4cb93e9e-c8ce-4337-a1ba-8a24be8e532b
 :END:
+
+- Algorithm
+  - As long as the buffer fits in the window the text-scale gets increased.
+  - As long as the buffer doesn't fit in the window text-scale gets decreased.
+  - Edge case (reaching max/min text-scale): respect the user controllable borders text-scale-max-amount and text-scale-min-amount for text-scale.
 
 #+begin_src emacs-lisp
 
@@ -556,7 +598,13 @@ When at minimal text scale stay there and inform."
 
 ** open
 
-*** TODO Document Process with MELPA
+*** TODO define tests in the literate source file
+
+*** TODO improve testing
+
+** closed
+
+*** DONE Document Process with MELPA
 
 - [2020-02-17 Mon] conao3 points out a dependency issue.
   - => change: incf to cl-incf, assert to cl-assert.
@@ -564,8 +612,7 @@ When at minimal text scale stay there and inform."
 - [2020-02-16 Sun] placed a pull
   request.  see https://github.com/melpa/melpa/pull/6701.
 - [2020-02-16 Sun] some cleanup done.
-
-** closed
+- [2020-06-23 Tue] the package is on melpa.
 
 *** DONE investigate irritations with org-links
 

@@ -160,10 +160,11 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 :ID:       6efd027d-a9d3-420d-bb38-54be994637ae
 :END:
 
-This section mirrors the ChangeLog file.
+#+begin_src change-log :comments link :tangle ./ChangeLog
+2020-06-24  Marco Wahl  <marcowahlsoft@gmail.com>
 
-# pick up changes: go to file ChangeLog.  do org-babel-detangle.
-#+begin_src text
+	* fit-text-scale.org: some cleanup.
+
 2020-02-17 Marco Wahl  <marcowahlsoft@gmail.com>
 
 	(1.1.3) Minor tweaks to meet the standards of MELPA.
@@ -178,6 +179,9 @@ This section mirrors the ChangeLog file.
 
 Add entries to the ChangeLog file into that block.  E.g. use C-x 4 a
 and don't forget to move the entry into that block.
+
+Pick up changes from the ChangeLog. Go to file ChangeLog and call
+org-babel-detangle.
 
 ** Development
 

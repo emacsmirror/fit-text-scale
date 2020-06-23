@@ -190,7 +190,7 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
             (setq target (point))))
         (forward-visible-line 1)
         (cl-incf n))
-      (goto-char target))))
+      target)))
 
 
 ;;;###autoload
@@ -201,9 +201,13 @@ Take at most `fit-text-scale-consider-max-number-lines' lines into account."
   (beginning-of-line)
   (let ((eol (progn (save-excursion (end-of-visible-line)
                                     (point)))))
-    (cl-assert (<= (progn (save-excursion (end-of-visual-line) (point)))
-                eol)
-            "programming logic error.  this is a bad sign.  please report the issue.")
+    (cl-assert
+     (<= (progn (save-excursion (end-of-visual-line) (point)))
+         eol)
+     (concat
+      "programming logic error.  "
+      "this shouldn't happen.  "
+      "please report the issue."))
     (while (and (< text-scale-mode-amount fit-text-scale-max-amount)
                 (= (progn (save-excursion (end-of-visual-line) (point))) eol))
       (fit-text-scale--increase 1))
@@ -219,7 +223,7 @@ considered."
   (interactive)
   (save-excursion
     (move-to-window-line 0)
-    (fit-text-scale-goto-visible-line-of-max-length-down)
+    (goto-char (fit-text-scale-goto-visible-line-of-max-length-down))
     (fit-text-scale-max-font-size-fit-line)))
 
 

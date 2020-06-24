@@ -49,11 +49,9 @@ functionality to keys.
  (kbd "C-x C-&")
  (lambda (&optional arg)
    (interactive "P")
-   (apply
-    (if arg
-        #'fit-text-scale-max-font-size-fit-line
-      #'fit-text-scale-max-font-size-fit-lines)
-    nil)))
+   (if arg
+       (fit-text-scale-max-font-size-fit-line)
+      (fit-text-scale-max-font-size-fit-lines))))
 
 (global-set-key
  (kbd "C-x C-*")

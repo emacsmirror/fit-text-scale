@@ -48,16 +48,18 @@
 ;; - Choose the maximal text scale to still see all lines of a buffer.
 
 ;; The following code in an init file binds the
-;; functionality to keys.
+;; functionality to keys. Of course you don't need
+;; to use this binding. Your can choose your own.
 ;; 
 ;; #+begin_src emacs-lisp
 ;; (global-set-key
 ;;  (kbd "C-x C-&")
 ;;  (lambda (&optional arg)
 ;;    (interactive "P")
-;;    (if arg
-;;        (fit-text-scale-max-font-size-fit-line)
-;;       (fit-text-scale-max-font-size-fit-lines))))
+;;    (cond
+;;     ((equal arg '(4)) (fit-text-scale-max-font-size-fit-line))
+;;     ((equal arg '(16)) (fit-text-scale-max-font-size-fit-line-up-to-cursor))
+;;     (t (fit-text-scale-max-font-size-fit-lines)))))
 ;; 
 ;; (global-set-key
 ;;  (kbd "C-x C-*")
@@ -70,8 +72,11 @@
 ;;   - Choose maximal text scale so that the longest line visible still
 ;;     fits in current window.
 ;; - ~C-u C-x C-&~
-;;   - Choose maximal text scale so that the *current* line still
+;;   - Choose maximal text scale so that the current line still
 ;;     fits in the window.
+;; - ~C-u C-u C-x C-&~
+;;   - Choose maximal text scale so that the current line up to the cursor
+;;     still fits in the window. This can be useful with visual-line-mode.
 ;; - ~C-x C-*
 ;;   - Choose maximal text scale so that the vertical buffer content
 ;;     still fits into current window.
@@ -223,6 +228,21 @@ considered."
     (move-to-window-line 0)
     (goto-char (fit-text-scale-goto-visible-line-of-max-length-down))
     (fit-text-scale-max-font-size-fit-line)))
+
+;;;###autoload
+(defun fit-text-scale-max-font-size-fit-line-up-to-cursor ()
+  "Use the maximal text scale to fit line up to cursor in the window.
+Note: This can be helpful when in visual-line-mode and the lines are long."
+  (interactive)
+  (unless (bolp)
+    (save-excursion
+      (save-restriction
+        (narrow-to-region
+         (line-beginning-position)
+         ;; the possible extension by one has been found to do the
+         ;; right thing in visual-line-mode.
+         (+ (point) (if (< (point) (line-end-position)) 1 0)))
+        (fit-text-scale-max-font-size-fit-line)))))
 
 
 ;;;###autoload

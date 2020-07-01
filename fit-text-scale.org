@@ -164,6 +164,10 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 :END:
 
 #+begin_src change-log :comments link :tangle ./ChangeLog
+2020-07-02  Marco Wahl  <marcowahlsoft@gmail.com>
+
+	* fit-text-scale-max-font-size-fit-line-up-to-cursor: new convenience command.
+
 2020-06-24  Marco Wahl  <marcowahlsoft@gmail.com>
 
 	* fit-text-scale.org: some cleanup.

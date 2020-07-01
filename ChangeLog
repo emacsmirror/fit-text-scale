@@ -1,4 +1,9 @@
-# [[id:6efd027d-a9d3-420d-bb38-54be994637ae][ChangeLog:1]]
+
+; [[id:6efd027d-a9d3-420d-bb38-54be994637ae][ChangeLog:1]]
+2020-07-02  Marco Wahl  <marcowahlsoft@gmail.com>
+
+	* fit-text-scale-max-font-size-fit-line-up-to-cursor: new convenience command.
+
 2020-06-24  Marco Wahl  <marcowahlsoft@gmail.com>
 
 	* fit-text-scale.org: some cleanup.
@@ -13,4 +18,4 @@
 	text occurs e.g. with Org links.
 	(1.1.0) Prepare for MELPA proposition.  Done bytecompile, checkdoc
 	package-lint.
-# ChangeLog:1 ends here
+; ChangeLog:1 ends here

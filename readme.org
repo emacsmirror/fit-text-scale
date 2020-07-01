@@ -140,7 +140,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #+name: fit-text-scale-version
 #+begin_src text
-1.1.3
+1.1.4
 #+end_src
 
 ** Typical Metadata
@@ -166,11 +166,12 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 #+begin_src change-log :comments link :tangle ./ChangeLog
 2020-07-02  Marco Wahl  <marcowahlsoft@gmail.com>
 
-	* fit-text-scale-max-font-size-fit-line-up-to-cursor: new convenience command.
+	,* (1.1.4) release.
+	,* fit-text-scale-max-font-size-fit-line-up-to-cursor: new convenience command.
 
 2020-06-24  Marco Wahl  <marcowahlsoft@gmail.com>
 
-	* fit-text-scale.org: some cleanup.
+	,* fit-text-scale.org: some cleanup.
 
 2020-02-17 Marco Wahl  <marcowahlsoft@gmail.com>
 

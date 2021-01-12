@@ -1,7 +1,8 @@
 # [[id:6efd027d-a9d3-420d-bb38-54be994637ae][ChangeLog:1]]
 2021-01-12  Marco Wahl  <marcowahlsoft@gmail.com>
 
-	* fit-text-scale.org (Usage): better wording.
+	* fit-text-scale.org (Usage): Extend key binding example. Take
+	active region into account.
 
 2020-07-02  Marco Wahl  <marcowahlsoft@gmail.com>
 

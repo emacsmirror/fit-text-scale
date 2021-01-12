@@ -53,31 +53,44 @@ to use these bindings. Your can choose your own.
    (cond
     ((equal arg '(4)) (fit-text-scale-max-font-size-fit-line))
     ((equal arg '(16)) (fit-text-scale-max-font-size-fit-line-up-to-cursor))
+    ((and (region-active-p) (< (region-beginning) (region-end)))
+     (save-restriction
+       (narrow-to-region (region-beginning) (region-end))
+       (fit-text-scale-max-font-size-fit-lines)))
     (t (fit-text-scale-max-font-size-fit-lines)))))
 
 (global-set-key
  (kbd "C-x C-*")
-   #'fit-text-scale-max-font-size-fit-buffer)
+ (lambda (&optional arg)
+   (interactive "P")
+   (if (and (region-active-p) (< (region-beginning) (region-end)))
+       (save-restriction
+         (narrow-to-region (region-beginning) (region-end))
+         (fit-text-scale-max-font-size-fit-buffer))
+     (fit-text-scale-max-font-size-fit-buffer))))
 ,#+end_src
 
 With these settings there is
 
-- ~C-x C-&~
-  - Choose maximal text scale so that the longest line visible still
-    fits in current window.
 - ~C-u C-x C-&~
   - Choose maximal text scale so that the current line still
     fits in the window.
 - ~C-u C-u C-x C-&~
   - Choose maximal text scale so that the current line up to the cursor
     still fits in the window. This can be useful with visual-line-mode.
+- ~C-x C-&~
+  - Choose maximal text scale so that the longest line visible still
+    fits in current window.
+  - If region is active then only consider lines in the region.
 - ~C-x C-*
   - Choose maximal text scale so that the vertical buffer content
     still fits into current window.
-- ~C-x C-0~ (Already given.  This is good old ~text-scale-adjust~.)
+  - If region is active then only consider lines in the region.
+- ~C-x C-0~ (Already given with standard Emacs.  This is good old
+  ~text-scale-adjust~.)
   - Switch back to the default size when control about the sizes has
     been lost.
-- ~C-x C-+~ + - and ~C-x C--~ - + for fine tuning.  (Also given.)
+- Use e.g. ~C-x C-+ ====~ + - and ~C-x C-- -----~ - + for fine tuning.  (Also given.)
 - ~C-g C-g C-g~... (hit the keyboard hard!) if something, hrm, hangs.
 #+end_src
 
@@ -166,16 +179,17 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 #+begin_src change-log :comments link :tangle ./ChangeLog
 2021-01-12  Marco Wahl  <marcowahlsoft@gmail.com>
 
-	,* fit-text-scale.org (Usage): better wording.
+	* fit-text-scale.org (Usage): Extend key binding example. Take
+	active region into account.
 
 2020-07-02  Marco Wahl  <marcowahlsoft@gmail.com>
 
-	,* (1.1.4) release.
-	,* fit-text-scale-max-font-size-fit-line-up-to-cursor: new convenience command.
+	* (1.1.4) release.
+	* fit-text-scale-max-font-size-fit-line-up-to-cursor: new convenience command.
 
 2020-06-24  Marco Wahl  <marcowahlsoft@gmail.com>
 
-	,* fit-text-scale.org: some cleanup.
+	* fit-text-scale.org: some cleanup.
 
 2020-02-17 Marco Wahl  <marcowahlsoft@gmail.com>
 

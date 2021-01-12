@@ -49,7 +49,7 @@
 
 ;; The following code in an init file binds the
 ;; functionality to keys. Of course you don't need
-;; to use this binding. Your can choose your own.
+;; to use these bindings. Your can choose your own.
 ;; 
 ;; #+begin_src emacs-lisp
 ;; (global-set-key

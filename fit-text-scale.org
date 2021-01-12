@@ -43,7 +43,7 @@ There are three functions:
 #+begin_src org
 The following code in an init file binds the
 functionality to keys. Of course you don't need
-to use this binding. Your can choose your own.
+to use these bindings. Your can choose your own.
 
 ,#+begin_src emacs-lisp
 (global-set-key
@@ -164,6 +164,10 @@ URL: https://gitlab.com/marcowahl/fit-text-scale
 :END:
 
 #+begin_src change-log :comments link :tangle ./ChangeLog
+2021-01-12  Marco Wahl  <marcowahlsoft@gmail.com>
+
+	,* fit-text-scale.org (Usage): better wording.
+
 2020-07-02  Marco Wahl  <marcowahlsoft@gmail.com>
 
 	,* (1.1.4) release.

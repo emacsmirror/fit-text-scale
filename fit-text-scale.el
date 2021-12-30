@@ -37,7 +37,7 @@
 ;; font size?
 
 ;; 
-;; ~fit-text-scale~ is an automation to set the scale so that the text
+;; fit-text-scale is an automation to set the scale so that the text
 ;; uses the maximal space to fit in the window.
 ;; 
 ;; Scale stands for the zoom of the font.
@@ -47,9 +47,19 @@
 ;; - Choose the maximal text scale to still see the full lines.
 ;; - Choose the maximal text scale to still see all lines of a buffer.
 
-;; The following code in an init file binds the
-;; functionality to keys. Of course you don't need
-;; to use these bindings. Your can choose your own.
+;; To get a feeling for the functions it's recommended to play around
+;; with the commands.
+;; 
+;; - M-x fit-text-scale-max-font-size-fit-line
+;; - M-x fit-text-scale-max-font-size-fit-lines
+;; - M-x fit-text-scale-max-font-size-fit-buffer
+;; 
+;; If you want to use the functionality more conveniently it's
+;; recommended to bind the commands to keys.  Find below a configuration
+;; which extends the operations to act on region if a region is set.
+;; 
+;; The following code in an init file binds the functionality to keys. Of
+;; course you don't need to use these bindings. Your can choose your own.
 ;; 
 ;; #+begin_src emacs-lisp
 ;; (global-set-key
@@ -78,33 +88,33 @@
 ;; 
 ;; With these settings there is
 ;; 
-;; - ~C-u C-x C-&~
+;; - C-u C-x C-&
 ;;   - Choose maximal text scale so that the current line still
 ;;     fits in the window.
-;; - ~C-u C-u C-x C-&~
+;; - C-u C-u C-x C-&
 ;;   - Choose maximal text scale so that the current line up to the cursor
 ;;     still fits in the window. This can be useful with visual-line-mode.
-;; - ~C-x C-&~
+;; - C-x C-&
 ;;   - Choose maximal text scale so that the longest line visible still
 ;;     fits in current window.
 ;;   - If region is active then only consider lines in the region.
-;; - ~C-x C-*
+;; - C-x C-*
 ;;   - Choose maximal text scale so that the vertical buffer content
 ;;     still fits into current window.
 ;;   - If region is active then only consider lines in the region.
-;; - ~C-x C-0~ (Already given with standard Emacs.  This is good old
-;;   ~text-scale-adjust~.)
+;; - C-x C-0 (Already given with standard Emacs.  This is good old
+;;   text-scale-adjust.)
 ;;   - Switch back to the default size when control about the sizes has
 ;;     been lost.
-;; - Use e.g. ~C-x C-+ ====~ + - and ~C-x C-- -----~ - + for fine tuning.  (Also given.)
-;; - ~C-g C-g C-g~... (hit the keyboard hard!) if something, hrm, hangs.
+;; - Use e.g. C-x C-+ ==== + - and C-x C-- ----- - + for fine tuning.  (Also given.)
+;; - C-g C-g C-g... (hit the keyboard hard!) if something, hrm, hangs.
 
 ;; There are some parameters to fine tune the functionality.  Check it out with
 ;; 
 ;;     M-x customize-group fit-text-scale
 ;; 
 
-;; ~fit-text-scale~ is available on melpa.
+;; fit-text-scale is available on melpa.
 ;; 
 ;; 
 ;; Or use the good old style:

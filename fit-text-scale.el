@@ -58,8 +58,9 @@
 ;; recommended to bind the commands to keys.  Find below a configuration
 ;; which extends the operations to act on region if a region is set.
 ;; 
-;; The following code in an init file binds the functionality to keys. Of
-;; course you don't need to use these bindings. Your can choose your own.
+;; The following code in an init file binds the functionality to keys.  Of
+;; course you don't need to use these bindings.  You can choose your own
+;; bindings.
 ;; 
 ;; #+begin_src emacs-lisp
 ;; (global-set-key

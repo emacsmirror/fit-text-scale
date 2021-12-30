@@ -224,13 +224,13 @@ In Org mode use org-babel-tangle. {C-c C-v t}
 Recall the opportunity to use the property line
 
 #+begin_src text
-:header-args:emacs-lisp+: :comments both
+:header-args:emacs-lisp+ :comments both
 #+end_src
 
 instead of
 
 #+begin_src text
-:header-args:emacs-lisp+: :comments no
+:header-args:emacs-lisp+ :comments no
 #+end_src
 
 to create tangle-info for detangling.
